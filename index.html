@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agente de memorandos de suporte à auditoria · Proposta técnica</title>
+<style>
+  :root {
+    --papel: #F2F1EF;
+    --cartao: #FFFFFF;
+    --tinta: #1E1428;
+    --tinta-2: #5A5560;
+    --traco: #DCD8D3;
+    --gt: #4F2D7F;
+    --gt-escuro: #2B144D;
+    --gt-medio: #5F3698;
+    --f-texto: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --f-mono: "Cascadia Mono", Consolas, "SFMono-Regular", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--papel);
+    color: var(--tinta);
+    font-family: var(--f-texto);
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background: var(--gt-escuro);
+    color: #FFFFFF;
+    padding: 48px 24px 56px;
+  }
+  .miolo { max-width: 960px; margin: 0 auto; width: 100%; }
+  .rotulo {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #CDBFE6;
+    margin: 0 0 16px;
+  }
+  h1 { font-size: clamp(28px, 4vw, 40px); font-weight: 600; line-height: 1.15; margin: 0 0 16px; }
+  header p { font-size: 17px; line-height: 1.55; color: #E6DFF2; margin: 0; max-width: 640px; }
+  main { flex: 1; padding: 40px 24px; }
+  .grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  a.cartao {
+    display: block;
+    background: var(--cartao);
+    border: 1px solid var(--traco);
+    border-top: 4px solid var(--gt);
+    border-radius: 4px;
+    padding: 24px;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  a.cartao:hover, a.cartao:focus-visible { border-color: var(--gt-medio); box-shadow: 0 4px 16px rgba(43, 20, 77, .12); outline: none; }
+  .cartao .rotulo { color: var(--gt); margin-bottom: 8px; }
+  .cartao h2 { font-size: 21px; font-weight: 600; margin: 0 0 10px; }
+  .cartao p { font-size: 15px; line-height: 1.55; color: var(--tinta-2); margin: 0 0 18px; }
+  .abrir { font-size: 14px; font-weight: 600; color: var(--gt); }
+  footer {
+    padding: 20px 24px;
+    font-size: 13px;
+    color: var(--tinta-2);
+    border-top: 1px solid var(--traco);
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="miolo">
+    <p class="rotulo">Grant Thornton · Strategy and Transactions · Proposta técnica</p>
+    <h1>Agente de memorandos de suporte à auditoria</h1>
+    <p>Agente de inteligência artificial que redige o rascunho dos memorandos de suporte à auditoria a partir do laudo de avaliação, do modelo do avaliador e do modelo GT, instalado no servidor da Grant Thornton.</p>
+  </div>
+</header>
+<main>
+  <div class="miolo grade">
+    <a class="cartao" href="fluxograma.html">
+      <p class="rotulo">Arquitetura</p>
+      <h2>Fluxograma interativo</h2>
+      <p>Apresenta a arquitetura da solução, o percurso de um memorando, as etapas e o cronograma do projeto, as premissas e o que fica fora do escopo.</p>
+      <span class="abrir">Abrir o fluxograma →</span>
+    </a>
+    <a class="cartao" href="prototipo.html">
+      <p class="rotulo">Protótipo</p>
+      <h2>Redação de memorandos</h2>
+      <p>Simula, sobre um caso fictício, a tela em que o analista gera o rascunho, confere a origem de cada valor e baixa o memorando em Word.</p>
+      <span class="abrir">Abrir o protótipo →</span>
+    </a>
+  </div>
+</main>
+<footer>
+  <div class="miolo">Poli Júnior · Núcleo de Dados e IA. O protótipo utiliza dados ilustrativos.</div>
+</footer>
+</body>
+</html>

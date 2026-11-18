@@ -1,0 +1,2487 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redação de memorandos · Grant Thornton</title>
+<style>
+/* estilo.css — protótipo de redação de memorandos da Grant Thornton.
+ * Ferramenta de trabalho de auditoria: sóbria, densa e com o documento no centro. O roxo da marca marca
+ * ação e seleção; o que o modelo de linguagem redigiu aparece em lilás com hachura, o que a regra preencheu
+ * em teal liso, e o que a conferência marcou em âmbar, sempre com «!» e o motivo escrito. Peso 400 em tudo.
+ * Tokens e regras em "Redação de memorandos - Grant Thornton - DESIGN.md". */
+
+:root {
+  /* superfícies */
+  --papel: #FFFFFF;
+  --osso: #F2F1EF;
+  --lavagem: #F7F6F4;
+  --faixa: #E9E5E0;
+  /* texto */
+  --tinta: #231F20;
+  --tinta-2: #4A4446;
+  --cinza: #666666;          /* >= 4,5:1 sobre papel, osso, lavagem e gt-fundo */
+  /* estrutura */
+  --traco: #E2DDD8;
+  --traco-forte: #CCC4BD;    /* só borda */
+  /* marca */
+  --gt: #4F2D7F;
+  --gt-hover: #5F3698;
+  --gt-escuro: #2B144D;
+  --gt-fundo: #EFEAF6;
+  --gt-lilas: #A06DFF;       /* só hachura: 3,4:1 sobre branco */
+  --gt-teal: #00A4B3;        /* só barra: 3,0:1 sobre branco */
+  /* origem do trecho */
+  --modelo: #5B2FB0;
+  --modelo-f: #F3EDFF;
+  --regra: #00737E;
+  --regra-f: #E2F4F5;
+  /* estado */
+  --alerta: #8F4400;
+  --alerta-f: #FDF0DD;
+  --ok: #1B6E47;
+  --ok-f: #E5F2EB;
+  --foco: #CE2C2C;
+  /* tipografia */
+  --f-disp: "Bahnschrift", "DIN Alternate", "Barlow", "Roboto Condensed", "Segoe UI", sans-serif;
+  --f-texto: "Segoe UI Variable Text", "Segoe UI", Roboto, Arial, sans-serif;
+  --f-doc: "Aptos", "Calibri", "Carlito", "Segoe UI", Arial, sans-serif;
+  --f-mono: "Cascadia Mono", "Cascadia Code", Consolas, monospace;
+  /* raios: o botão do site tem 4px */
+  --r-tag: 4px; --r-botao: 4px; --r-cartao: 6px;
+  /* espaço, base 4 */
+  --e1: 4px; --e2: 8px; --e3: 12px; --e4: 16px; --e5: 20px; --e6: 24px; --e8: 32px;
+  --largura-maxima: 1400px;
+  --margem-lateral: max(var(--e6), calc((100% - var(--largura-maxima)) / 2 + var(--e6)));
+  --altura-da-barra: 132px;  /* cabeçalho + faixa + abas, para o recuo das âncoras e dos painéis fixos */
+  --hachura: repeating-linear-gradient(135deg, var(--gt-lilas) 0 2px, transparent 2px 5px);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--osso);
+  color: var(--tinta);
+  font: 400 14px/1.5 var(--f-texto);
+  font-variant-numeric: tabular-nums;
+}
+h1, h2, h3 { font-weight: 400; margin: 0; }
+p { margin: 0; }
+button, select, input, textarea { font: inherit; color: inherit; }
+b, strong, th { font-weight: 400; }
+:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+.nowrap { white-space: nowrap; }
+.mono { font-family: var(--f-mono); font-size: 12px; }
+.so-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.micro {
+  font-size: 11px; line-height: 1.6; letter-spacing: .08em; text-transform: uppercase; color: var(--cinza);
+}
+
+/* ---------------------------------------------------------------- barra fixa: cabeçalho, faixa e abas */
+.barra-fixa { position: sticky; top: 0; z-index: 20; }
+.topo {
+  display: flex; align-items: center; gap: var(--e3);
+  min-height: 56px; padding: 0 var(--margem-lateral);
+  background: var(--papel); border-bottom: 1px solid var(--traco);
+}
+.topo-placa { display: inline-flex; align-items: center; flex: none; }
+.topo-logo { height: 22px; width: auto; display: block; }
+.topo-divisor { width: 1px; height: 22px; background: var(--traco-forte); flex: none; }
+.topo-produto { font: 400 17px/1.2 var(--f-disp); white-space: nowrap; }
+.topo-area { font-size: 13px; color: var(--cinza); white-space: nowrap; }
+.topo-espaco { flex: 1; }
+.topo-analista { display: inline-flex; align-items: center; gap: var(--e2); font-size: 13px; color: var(--tinta-2); white-space: nowrap; }
+.avatar {
+  display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--gt-escuro); color: #FFFFFF; font-size: 11px; letter-spacing: .04em;
+}
+
+/* indicador do modelo de linguagem */
+.modelo { position: relative; }
+.modelo-botao {
+  display: inline-flex; align-items: center; gap: var(--e2);
+  height: 36px; padding: 0 var(--e3); border: 1px solid var(--traco-forte); border-radius: var(--r-botao);
+  background: var(--papel); cursor: pointer; white-space: nowrap;
+}
+.modelo-botao:hover { background: var(--lavagem); }
+.modelo-botao[aria-expanded="true"] { border-color: var(--gt); background: var(--gt-fundo); }
+.modelo-botao::before { content: ""; width: 10px; height: 10px; border-radius: 2px; background: var(--hachura); border: 1px solid var(--gt-lilas); flex: none; }
+.modelo-nome { font-size: 13px; color: var(--tinta); }
+.modelo-seta { font-size: 11px; color: var(--cinza); }
+.modelo-menu {
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 30; width: 360px;
+  display: grid; gap: var(--e2); padding: var(--e4);
+  background: var(--papel); border: 1px solid var(--traco-forte); border-radius: var(--r-cartao);
+}
+.modelo-menu[hidden] { display: none; }
+.modelo-opcao {
+  display: grid; gap: 2px; text-align: left; padding: var(--e3); cursor: pointer;
+  border: 1px solid var(--traco); border-radius: var(--r-botao); background: var(--papel);
+}
+.modelo-opcao:hover { border-color: var(--traco-forte); }
+.modelo-opcao[aria-pressed="true"] { border-color: var(--gt); background: var(--gt-fundo); }
+.modelo-opcao-nome { font-size: 14px; color: var(--tinta); }
+.modelo-opcao[aria-pressed="true"] .modelo-opcao-nome { color: var(--gt); }
+.modelo-opcao-onde { font-size: 12px; color: var(--tinta-2); }
+.modelo-nota { font-size: 12px; color: var(--cinza); }
+
+/* faixa do caso fictício */
+.faixa-ficticio {
+  display: flex; align-items: baseline; gap: var(--e3);
+  padding: 5px var(--margem-lateral); background: var(--faixa); border-bottom: 1px solid var(--traco-forte);
+  font-size: 12px; line-height: 1.5; color: var(--tinta-2);
+}
+.faixa-rotulo {
+  flex: none; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--tinta);
+  padding: 0 6px; border: 1px solid var(--tinta-2); border-radius: var(--r-tag);
+}
+
+/* abas */
+.abas {
+  display: flex; align-items: center; height: 44px; padding: 0 var(--margem-lateral);
+  background: var(--papel); border-bottom: 1px solid var(--traco);
+}
+.abas-lista { display: flex; height: 100%; margin-left: calc(-1 * var(--e3)); overflow-x: auto; scrollbar-width: none; }
+.aba {
+  height: 100%; padding: 0 var(--e3); border: 0; border-bottom: 2px solid transparent; background: none;
+  color: var(--tinta-2); cursor: pointer; white-space: nowrap;
+}
+.aba:hover { color: var(--tinta); }
+.aba[aria-selected="true"] { color: var(--gt); border-bottom-color: var(--gt); }
+
+/* ---------------------------------------------------------------- estrutura da tela */
+main { display: block; max-width: var(--largura-maxima); margin: 0 auto; padding: var(--e5) var(--e6) var(--e8); outline: none; }
+.cabecalho { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--e4); margin-bottom: var(--e4); }
+.cabecalho h1 { font: 400 26px/1.15 var(--f-disp); letter-spacing: -.01em; }
+.cabecalho .sub { margin-top: var(--e2); max-width: 860px; color: var(--tinta-2); }
+.cartao { background: var(--papel); border: 1px solid var(--traco); border-radius: var(--r-cartao); padding: var(--e5); min-width: 0; }
+.cartao h2 { font: 400 18px/1.3 var(--f-disp); }
+.cartao-topo { display: flex; align-items: center; justify-content: space-between; gap: var(--e3); flex-wrap: wrap; margin-bottom: var(--e3); }
+.texto-apoio { margin-top: var(--e1); color: var(--tinta-2); font-size: 13px; }
+.nota { margin-top: var(--e3); color: var(--cinza); font-size: 12px; }
+.pilha { display: flex; flex-direction: column; gap: var(--e4); min-width: 0; }
+.vazio { display: grid; gap: var(--e3); justify-items: start; color: var(--tinta-2); }
+/* position: relative segura dentro do contêiner o que é absoluto, como o rótulo só para leitor de tela */
+.rolagem { position: relative; overflow-x: auto; max-width: 100%; }
+.rodape { max-width: var(--largura-maxima); margin: 0 auto; padding: 0 var(--e6) var(--e8); font-size: 12px; color: var(--cinza); }
+
+/* ---------------------------------------------------------------- controles */
+.botao {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--e2);
+  height: 38px; padding: 0 var(--e5); border: 0; border-radius: var(--r-botao); background: var(--gt); color: #FFFFFF; cursor: pointer; white-space: nowrap;
+}
+.botao:hover { background: var(--gt-hover); }
+.botao:disabled { background: var(--traco); color: var(--tinta-2); cursor: not-allowed; }
+.botao-grande { width: 100%; height: 44px; font-size: 15px; }
+.botao-pequeno { height: 30px; padding: 0 var(--e3); font-size: 13px; }
+.botao-secundario {
+  display: inline-flex; align-items: center; height: 34px; padding: 0 var(--e4); border: 1px solid var(--gt); border-radius: var(--r-botao);
+  background: var(--papel); color: var(--gt); cursor: pointer; white-space: nowrap;
+}
+.botao-secundario:hover { background: var(--gt-fundo); }
+.link {
+  border: 0; background: none; padding: 0; color: var(--gt); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; text-align: left;
+}
+.link:hover { color: var(--gt-hover); }
+.segmentado { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--traco-forte); border-radius: var(--r-botao); overflow: hidden; background: var(--papel); max-width: 100%; }
+.segmentado button { min-height: 32px; padding: 0 var(--e3); border: 0; background: none; color: var(--tinta-2); cursor: pointer; }
+.segmentado button + button { border-left: 1px solid var(--traco-forte); }
+.segmentado button:hover { background: var(--lavagem); }
+.segmentado button[aria-pressed="true"] { background: var(--gt-fundo); color: var(--gt); }
+.campo { display: flex; flex-direction: column; align-items: flex-start; gap: var(--e1); margin-top: var(--e3); }
+.campo-largo .seletor { width: 100%; max-width: 520px; }
+.seletor {
+  height: 38px; padding: 0 var(--e3); border: 1px solid var(--traco-forte); border-radius: var(--r-botao); background: var(--papel); color: var(--tinta);
+}
+.tag {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--r-tag); background: var(--lavagem);
+  font-size: 12px; line-height: 1.6; color: var(--tinta-2); white-space: nowrap;
+}
+.tag-alerta { background: var(--alerta-f); color: var(--alerta); }
+.tag-ok { background: var(--ok-f); color: var(--ok); }
+
+/* ---------------------------------------------------------------- origem: amostra e etiqueta */
+.origem { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 1.5; color: var(--tinta-2); white-space: nowrap; }
+.origem-modelo { color: var(--modelo); }
+.origem-regra { color: var(--regra); }
+.amostra { display: inline-block; width: 10px; height: 10px; border-radius: 2px; flex: none; }
+.amostra-modelo { background: var(--hachura); border: 1px solid var(--gt-lilas); }
+.amostra-regra { background: var(--gt-teal); }
+.amostra-analista { border: 1px dashed var(--tinta-2); background: var(--papel); }
+
+/* ---------------------------------------------------------------- tela 1: novo memorando */
+.grade-novo { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: var(--e4); align-items: start; }
+.grade-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e4); align-items: stretch; }
+.resumo-novo { position: sticky; top: calc(var(--altura-da-barra) + var(--e4)); display: grid; gap: var(--e3); }
+.caminho {
+  width: 100%; padding: var(--e2) var(--e3); border: 1px solid var(--traco-forte); border-radius: var(--r-botao); background: var(--lavagem);
+  font: 400 13px/1.5 var(--f-mono); color: var(--tinta); overflow-wrap: anywhere;
+}
+.arquivos { list-style: none; margin: var(--e2) 0 0; padding: 0; display: grid; gap: var(--e2); }
+.arquivo {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--e3);
+  padding: var(--e2) var(--e3); border: 1px solid var(--traco); border-radius: var(--r-botao);
+}
+.arquivo-tipo {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 22px; padding: 0 4px;
+  border-radius: 3px; font: 400 11px/1 var(--f-mono); color: #FFFFFF; background: var(--gt-escuro);
+}
+.arquivo-xlsx { background: var(--regra); }
+.arquivo-texto { display: grid; min-width: 0; }
+.arquivo-nome { overflow-wrap: anywhere; }
+.arquivo-detalhe { font-size: 12px; color: var(--cinza); }
+.envios { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--e3); }
+.envio {
+  display: grid; gap: var(--e2); align-content: start; padding: var(--e3);
+  border: 1px dashed var(--traco-forte); border-radius: var(--r-cartao); background: var(--lavagem);
+}
+.envio-nome { display: flex; align-items: flex-start; gap: var(--e2); font-size: 13px; overflow-wrap: anywhere; min-width: 0; }
+.envio-ok { font-size: 12px; color: var(--ok); }
+.opcoes { display: grid; gap: var(--e2); margin-top: var(--e3); }
+.opcao {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--e3); align-items: start;
+  padding: var(--e3); border: 1px solid var(--traco); border-radius: var(--r-botao); cursor: pointer;
+}
+.opcao:hover { border-color: var(--traco-forte); }
+.opcao-marcada { border-color: var(--gt); background: var(--gt-fundo); }
+.opcao input { margin: 3px 0 0; accent-color: var(--gt); }
+.opcao-texto { display: grid; gap: 2px; min-width: 0; }
+.opcao-apoio { font-size: 12px; color: var(--cinza); }
+.opcao-fixa { cursor: default; background: var(--lavagem); }
+.aviso-cpc { margin-top: var(--e3); padding: var(--e2) var(--e3); border-radius: var(--r-botao); background: var(--alerta-f); color: var(--alerta); font-size: 13px; }
+.dados { display: grid; gap: var(--e2); margin: 0; }
+.dados div { display: grid; gap: 0; }
+.dados dt { font-size: 12px; color: var(--cinza); }
+.dados dd { margin: 0; }
+.como-preenche { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e3); }
+.como-preenche li { display: grid; gap: 2px; }
+.como-preenche p { font-size: 13px; color: var(--tinta-2); }
+
+/* ---------------------------------------------------------------- tela 2: geração */
+.grade-geracao { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--e4); align-items: start; }
+.progresso-texto { font-size: 13px; color: var(--gt); white-space: nowrap; }
+.progresso { height: 4px; border-radius: 2px; background: var(--traco); overflow: hidden; margin-bottom: var(--e2); }
+.progresso span { display: block; height: 100%; background: var(--gt); transition: width .3s ease; }
+.grupo-passos { margin: var(--e4) 0 var(--e1); }
+.passos { list-style: none; margin: 0; padding: 0; display: grid; }
+.passo { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: var(--e2); padding: var(--e2) 0; border-top: 1px solid var(--traco); }
+.passo-sinal {
+  display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%;
+  font-size: 12px; border: 1px solid var(--traco-forte); color: var(--cinza); background: var(--papel);
+}
+.passo-pronto .passo-sinal { border-color: var(--ok); color: var(--ok); background: var(--ok-f); }
+.passo-andamento .passo-sinal { border-color: var(--gt); color: var(--gt); background: var(--gt-fundo); }
+.passo-corpo { min-width: 0; }
+.passo-topo { display: flex; align-items: center; flex-wrap: wrap; gap: var(--e1) var(--e3); }
+.passo-titulo { color: var(--tinta); }
+.passo-fila .passo-titulo { color: var(--tinta-2); }
+.passo-estado { margin-left: auto; font-size: 12px; color: var(--cinza); white-space: nowrap; }
+.passo-pronto .passo-estado { color: var(--ok); }
+.passo-andamento .passo-estado { color: var(--gt); }
+.passo-detalhe { margin-top: 2px; font-size: 13px; color: var(--tinta-2); }
+.previa-doc { padding: var(--e4) var(--e5); border: 1px solid var(--traco); border-radius: var(--r-botao); font-family: var(--f-doc); }
+.previa-titulo { font: 400 16px/1.4 var(--f-doc); color: var(--gt); margin-bottom: var(--e2); }
+.cartao-pronto { border-color: var(--ok); border-left-width: 4px; display: grid; gap: var(--e3); justify-items: start; }
+
+/* ---------------------------------------------------------------- tela 3: rascunho */
+.barra-caso { display: flex; align-items: center; gap: var(--e5); flex-wrap: wrap; margin-bottom: var(--e4); padding: var(--e4) var(--e5); }
+.barra-caso-id { flex: 1 1 320px; min-width: 0; }
+.barra-caso-cliente { font-size: 13px; color: var(--tinta-2); }
+.barra-caso-dados { display: flex; flex-wrap: wrap; gap: var(--e2) var(--e6); margin: 0; }
+.barra-caso-dados div { display: grid; }
+.barra-caso-dados dt { font-size: 12px; color: var(--cinza); }
+.barra-caso-dados dd { margin: 0; }
+.aviso-retomada {
+  display: grid; gap: var(--e1); padding: var(--e3) var(--e4);
+  border: 1px solid var(--gt); border-left-width: 4px; border-radius: var(--r-cartao); background: var(--gt-fundo);
+}
+.aviso-retomada .micro { color: var(--gt); }
+.aviso-retomada p { color: var(--tinta); font-size: 13px; }
+.aviso-acoes { display: flex; flex-wrap: wrap; gap: var(--e1) var(--e4); font-size: 13px; }
+/* rascunhos do caso: o anterior abre só para leitura */
+.versoes { flex: 1 1 100%; justify-self: start; }
+.versoes button { font-size: 13px; }
+.aviso-leitura {
+  display: grid; gap: var(--e1); justify-items: start; margin-bottom: var(--e4); padding: var(--e3) var(--e5);
+  border: 1px solid var(--traco-forte); border-left: 4px solid var(--tinta-2); border-radius: var(--r-cartao); background: var(--lavagem);
+}
+.aviso-leitura p { color: var(--tinta); font-size: 13px; }
+.versoes-anteriores { display: grid; justify-items: end; gap: 2px; margin-top: var(--e2); }
+.link-versao { font-size: 12px; }
+/* O aviso de retomada mora no painel fixo; no celular, em que o painel fica embaixo, ele sobe para cima do documento */
+.so-estreito { display: none; }
+
+.grade-rascunho { display: grid; grid-template-columns: 220px minmax(0, 1fr) 380px; gap: var(--e4); align-items: start; }
+.sumario {
+  position: sticky; top: calc(var(--altura-da-barra) + var(--e4)); display: grid; gap: var(--e2);
+  padding: var(--e4); background: var(--papel); border: 1px solid var(--traco); border-radius: var(--r-cartao);
+}
+.sumario ol { list-style: none; margin: 0; padding: 0; display: grid; }
+.sumario-item {
+  display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; align-items: center; gap: 2px var(--e2);
+  width: 100%; padding: 5px var(--e1); border: 0; border-radius: var(--r-botao);
+  background: none; text-align: left; cursor: pointer; font-size: 13px; color: var(--tinta-2);
+}
+.sumario-item:hover { background: var(--lavagem); color: var(--tinta); }
+.sumario-titulo { min-width: 0; }
+.sumario-marca { font-size: 12px; padding: 0 5px; border-radius: var(--r-tag); background: var(--alerta-f); color: var(--alerta); white-space: nowrap; }
+.sumario-parou { grid-column: 2 / -1; justify-self: start; font-size: 11px; padding: 0 5px; border-radius: var(--r-tag); background: var(--gt-fundo); color: var(--gt); }
+.legenda { display: grid; gap: var(--e1); padding-top: var(--e3); border-top: 1px solid var(--traco); }
+
+/* o documento */
+.documento {
+  min-width: 0; padding: var(--e8) 48px 48px; background: var(--papel); border: 1px solid var(--traco); border-radius: 2px;
+  font-family: var(--f-doc); font-size: 14.5px; line-height: 1.65;
+}
+.doc-topo { display: flex; align-items: center; justify-content: space-between; gap: var(--e3); padding-bottom: var(--e3); border-bottom: 1px solid var(--traco-forte); }
+.doc-logo { height: 20px; width: auto; display: block; }
+.doc-area { font-size: 12px; color: var(--cinza); font-family: var(--f-texto); }
+.doc-titulo { margin-top: var(--e5); font: 400 22px/1.3 var(--f-doc); color: var(--gt); }
+.doc-sub { font-size: 13px; color: var(--cinza); }
+.doc-identificacao { width: 100%; margin: var(--e4) 0 var(--e2); border-collapse: collapse; font-size: 13px; }
+.doc-identificacao th, .doc-identificacao td { padding: 5px var(--e3); border: 1px solid var(--traco); text-align: left; vertical-align: top; }
+.doc-identificacao th { width: 30%; color: var(--tinta-2); background: var(--lavagem); }
+.doc-secao { position: relative; margin-top: var(--e5); padding-left: var(--e4); border-left: 3px solid var(--traco); scroll-margin-top: calc(var(--altura-da-barra) + var(--e4)); }
+.doc-secao-regra { border-left-color: var(--gt-teal); }
+.doc-secao-modelo { border-left: 3px solid transparent; border-image: repeating-linear-gradient(180deg, var(--gt-lilas) 0 4px, transparent 4px 7px) 1; }
+.doc-secao-analista { border-left: 3px dashed var(--traco-forte); }
+.doc-secao.destacada { background: var(--gt-fundo); padding-top: var(--e2); padding-bottom: var(--e2); padding-right: var(--e2); }
+.doc-secao-topo { display: flex; align-items: baseline; justify-content: space-between; gap: var(--e1) var(--e3); flex-wrap: wrap; margin-bottom: var(--e1); }
+.doc-secao-topo h3 { font: 400 16px/1.4 var(--f-doc); color: var(--gt); }
+.doc-secao-topo .origem { font-family: var(--f-texto); }
+.doc-fonte { font: 400 12px/1.5 var(--f-texto); color: var(--cinza); margin-bottom: var(--e1); }
+.doc-fonte .link { font-size: 12px; }
+.doc-p { margin-top: var(--e2); }
+.doc-lista { margin: var(--e2) 0 0; padding-left: var(--e5); }
+.doc-bloco-rodape { display: flex; align-items: center; justify-content: flex-end; gap: var(--e3); margin-top: 2px; }
+.doc-editar {
+  border: 0; background: none; padding: 0; font: 400 12px/1.5 var(--f-texto); color: var(--gt); cursor: pointer;
+  text-decoration: underline; text-underline-offset: 2px;
+}
+.doc-editado { font: 400 12px/1.5 var(--f-texto); color: var(--modelo); }
+.doc-edicao { display: grid; gap: var(--e2); margin-top: var(--e2); padding: var(--e3); border: 1px solid var(--gt); border-radius: var(--r-botao); background: var(--gt-fundo); }
+.doc-edicao textarea {
+  width: 100%; padding: var(--e2) var(--e3); border: 1px solid var(--traco-forte); border-radius: var(--r-botao); background: var(--papel);
+  font: 400 14px/1.6 var(--f-doc); resize: vertical;
+}
+.doc-edicao .nota { margin-top: 0; }
+.doc-edicao-acoes { display: flex; gap: var(--e2); flex-wrap: wrap; }
+.doc-nota-analista { font: 400 12px/1.5 var(--f-texto); color: var(--cinza); }
+.doc-conclusao { min-height: 120px; margin-top: var(--e2); border: 1px dashed var(--traco-forte); border-radius: var(--r-botao); background: var(--lavagem); }
+.doc-tabela { width: 100%; margin-top: var(--e3); border-collapse: collapse; font: 400 13px/1.4 var(--f-doc); }
+.doc-tabela th, .doc-tabela td { padding: 4px var(--e2); border-bottom: 1px solid var(--traco); text-align: right; white-space: nowrap; }
+.doc-tabela thead th { font: 400 11px/1.6 var(--f-texto); letter-spacing: .08em; text-transform: uppercase; color: var(--cinza); border-bottom-color: var(--traco-forte); }
+.doc-tabela th[scope="row"], .doc-tabela thead th:first-child { text-align: left; color: var(--tinta-2); }
+
+/* valor do caso e marcação de revisão, dentro do texto */
+.valor {
+  color: inherit; cursor: pointer; text-decoration: underline dotted var(--regra); text-decoration-thickness: 1.5px; text-underline-offset: 3px;
+  border-radius: 2px; white-space: nowrap;   /* "R$ 412.300 mil" não quebra no meio */
+}
+.valor:hover, .valor-ativo { background: var(--regra-f); color: var(--regra); text-decoration-style: solid; }
+.marca {
+  padding: 0 2px; border-radius: 2px; background: var(--alerta-f); color: var(--alerta); cursor: pointer;
+  text-decoration: underline wavy var(--alerta); text-decoration-thickness: 1px; text-underline-offset: 3px;
+}
+.marca-sinal { display: inline-block; margin-right: 2px; font-family: var(--f-texto); font-size: .85em; }
+.marca-revisada { background: var(--ok-f); color: var(--ok); text-decoration: none; }
+.marca-ativa { outline: 2px solid var(--alerta); outline-offset: 1px; }
+.marca-revisada.marca-ativa { outline-color: var(--ok); }
+
+/* painel */
+.painel {
+  position: sticky; top: calc(var(--altura-da-barra) + var(--e4)); display: grid; gap: var(--e3); min-width: 0;
+  max-height: calc(100vh - var(--altura-da-barra) - var(--e8)); overflow-y: auto; overscroll-behavior: contain;
+}
+.painel-abas { display: flex; border: 1px solid var(--traco-forte); border-radius: var(--r-botao); overflow: hidden; background: var(--papel); }
+.painel-abas button { flex: 1; min-height: 34px; padding: 0 var(--e2); border: 0; background: none; color: var(--tinta-2); cursor: pointer; font-size: 13px; }
+.painel-abas button + button { border-left: 1px solid var(--traco-forte); }
+.painel-abas button[aria-selected="true"] { background: var(--gt-fundo); color: var(--gt); }
+.painel-corpo { display: grid; gap: var(--e3); }
+.painel .cartao { padding: var(--e4); }
+.painel h2 { font-size: 16px; }
+.origem-campo { display: grid; gap: var(--e1); margin-top: var(--e3); padding-top: var(--e3); border-top: 1px solid var(--traco); }
+.origem-rotulo { font-size: 13px; color: var(--tinta-2); }
+.origem-valor { font: 400 22px/1.2 var(--f-disp); color: var(--regra); }
+.origem-local { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e2); margin: var(--e2) 0 0; }
+.origem-local div { display: grid; min-width: 0; }
+.origem-local .origem-arquivo { grid-column: 1 / -1; }
+.origem-local dt { font-size: 12px; color: var(--cinza); }
+.origem-local dd { margin: 0; overflow-wrap: anywhere; }
+.trecho-laudo { margin: var(--e2) 0 0; padding: var(--e3); border-left: 3px solid var(--traco-forte); background: var(--lavagem); font: 400 13px/1.6 var(--f-doc); }
+.trecho-laudo mark { background: var(--regra-f); color: var(--regra); padding: 0 2px; }
+.grade-rolagem { margin-top: var(--e2); border: 1px solid var(--traco); border-radius: 2px; }
+.grade-planilha { border-collapse: collapse; font: 400 12px/1.4 var(--f-mono); }
+.grade-planilha th, .grade-planilha td { padding: 3px 6px; border: 1px solid var(--traco); white-space: nowrap; text-align: right; }
+.grade-planilha thead th, .grade-num { background: var(--lavagem); color: var(--cinza); text-align: center; }
+.grade-planilha .grade-ativa { background: var(--regra-f); color: var(--regra); }
+.grade-rotulo { text-align: left !important; font-family: var(--f-texto); color: var(--tinta-2); }
+.grade-cab { color: var(--cinza); }
+.grade-alvo { outline: 2px solid var(--regra); outline-offset: -2px; background: var(--regra-f); color: var(--regra); }
+.lista-marcas { list-style: none; margin: var(--e3) 0 0; padding: 0; display: grid; gap: var(--e2); }
+.marca-item { display: grid; gap: var(--e1); padding: var(--e3); border: 1px solid var(--traco); border-left: 3px solid var(--alerta); border-radius: var(--r-botao); }
+.marca-item.revisada { border-left-color: var(--ok); }
+.marca-item.selecionada { border-color: var(--alerta); background: var(--alerta-f); }
+.marca-item.revisada.selecionada { border-color: var(--ok); background: var(--ok-f); }
+.marca-item-topo { display: flex; justify-content: space-between; gap: var(--e2); flex-wrap: wrap; }
+.marca-tipo { font-size: 13px; color: var(--alerta); }
+.marca-item.revisada .marca-tipo { color: var(--ok); }
+.marca-secao { font-size: 12px; color: var(--cinza); }
+.marca-trecho { font-family: var(--f-doc); overflow-wrap: anywhere; }
+.marca-explica, .marca-revisao { font-size: 12px; color: var(--tinta-2); }
+.marca-acoes { display: flex; align-items: center; justify-content: space-between; gap: var(--e2); flex-wrap: wrap; margin-top: var(--e1); }
+.grupo-ficha { margin: var(--e4) 0 var(--e1); }
+.ficha-lista { list-style: none; margin: 0; padding: 0; }
+.ficha-lista li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 var(--e2); padding: 5px 0; border-top: 1px solid var(--traco); font-size: 13px; }
+.ficha-rotulo { color: var(--tinta-2); min-width: 0; }
+.ficha-lista .valor { text-align: right; white-space: nowrap; }
+.ficha-local { grid-column: 1 / -1; color: var(--cinza); font-size: 11px; }
+.registro { list-style: none; margin: var(--e3) 0 0; padding: 0; display: grid; }
+.registro li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--e3); padding: var(--e2) 0; border-top: 1px solid var(--traco); font-size: 13px; }
+.registro-data { color: var(--cinza); padding-top: 1px; }
+
+/* ---------------------------------------------------------------- tela 4: histórico */
+.tabela { width: 100%; border-collapse: collapse; }
+.tabela th, .tabela td { padding: var(--e3) var(--e3); border-bottom: 1px solid var(--traco); text-align: left; vertical-align: top; }
+.tabela thead th { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--cinza); border-bottom-color: var(--traco-forte); white-space: nowrap; }
+.caso-celula, .analista-celula { min-width: 180px; }
+.caso-empresa { display: block; }
+.caso-cliente, .cpc-titulo, .situacao-detalhe { display: block; font-size: 12px; color: var(--cinza); }
+.cpc { display: block; }
+.situacao { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; white-space: nowrap; }
+.situacao-sinal {
+  display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; font-size: 11px;
+  border: 1px solid currentColor;
+}
+.situacao-ok { color: var(--ok); }
+.situacao-alerta { color: var(--alerta); }
+.situacao-neutro { color: var(--tinta-2); }
+.acao-celula { text-align: right !important; white-space: nowrap; }
+.sem-acao { color: var(--cinza); }
+#como-retomar { margin-top: var(--e4); }
+#como-retomar p { margin-top: var(--e2); max-width: 900px; color: var(--tinta-2); }
+
+/* ---------------------------------------------------------------- tamanhos de tela */
+@media (max-width: 1320px) {
+  .topo-area { display: none; }
+}
+@media (max-width: 1180px) {
+  .grade-rascunho { grid-template-columns: minmax(0, 1fr) 360px; }
+  .sumario { display: none; }
+}
+@media (max-width: 980px) {
+  .grade-novo, .grade-geracao, .grade-rascunho, .grade-2 { grid-template-columns: minmax(0, 1fr); }
+  .resumo-novo, .painel { position: static; max-height: none; overflow: visible; }
+  .modelo-rotulo { display: none; }
+  .so-estreito { display: grid; margin-bottom: var(--e4); }
+  .so-largo { display: none; }
+}
+@media (max-width: 720px) {
+  :root { --altura-da-barra: 0px; }
+  .barra-fixa { position: static; }
+  .topo { flex-wrap: wrap; gap: var(--e2) var(--e3); padding: var(--e2) var(--e4); }
+  .topo-espaco { display: none; }
+  .topo-analista-nome { display: none; }
+  .topo-analista { margin-left: auto; }
+  .modelo { order: 5; flex: 1 1 100%; }
+  .modelo-botao { width: 100%; }
+  .modelo-nome { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .modelo-menu { left: 0; right: 0; width: auto; }
+  .faixa-ficticio { flex-direction: column; gap: var(--e1); padding: var(--e2) var(--e4); }
+  /* As quatro abas cabem lado a lado, cada uma com um quarto da largura e o rótulo em até duas linhas */
+  .abas { height: auto; padding: 0 var(--e2); }
+  .abas-lista { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); width: 100%; margin-left: 0; overflow: visible; }
+  .aba { min-height: 48px; padding: var(--e1) 2px; white-space: normal; line-height: 1.25; font-size: 13px; text-align: center; }
+  main { padding: var(--e4) var(--e3) var(--e6); }
+  .rodape { padding: 0 var(--e3) var(--e6); }
+  .cabecalho h1 { font-size: 22px; }
+  .cartao { padding: var(--e4); }
+  .envios { grid-template-columns: minmax(0, 1fr); }
+  .arquivo { grid-template-columns: auto minmax(0, 1fr); }
+  .arquivo .tag { grid-column: 2; justify-self: start; }
+  .documento { padding: var(--e5) var(--e4) var(--e6); font-size: 14px; }
+  .doc-identificacao th { width: 38%; }
+  .doc-secao { padding-left: var(--e3); }
+  .barra-caso { gap: var(--e3); }
+  .barra-caso .botao { width: 100%; }
+  .passo-estado { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .progresso span { transition: none; }
+}
+
+</style>
+</head>
+<body>
+<div class="barra-fixa">
+<header class="topo">
+  <span class="topo-placa"><img class="topo-logo" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODYzIDE2MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZm9jdXNhYmxlPSJmYWxzZSIgc3R5bGU9ImNvbG9yOiByZ2IoNzksIDQ1LCAxMjcpOyI+DQo8cGF0aCBkPSJNMzM0Ljc1IDExNC40MkMzMjYuODYgMTE0LjQyIDMyMy44OSAxMTAuOTYgMzIzLjg5IDEwNS40MUMzMjMuODkgOTguOTkgMzI3LjQ3IDk1LjY2IDMzNi44NSA5NS42NkgzNDkuMTlWOTkuMzZDMzQ5LjE5IDEwOS4xMSAzNDMuMTQgMTE0LjQyIDMzNC43NSAxMTQuNDJaTTMxMy4yOCAxMDYuMzlDMzEzLjI4IDExNC4wNCAzMTcuNzIgMTIyLjE5IDMzMS41NCAxMjIuMTlDMzM5LjU2IDEyMi4xOSAzNDUuMTEgMTE5LjExIDM0OC45NCAxMTQuMTdMMzUwLjMgMTIwLjk2SDM1OC45NFY4NC40M0MzNTguOTQgNjguNzYgMzQ5LjU2IDY2LjA1IDMzOC40NiA2Ni4wNUMzMzAuMDcgNjYuMDUgMzE5LjA5IDY4LjUxIDMxNi4zNyA4MS4xSDMyNi45OEMzMjguMzQgNzYuNDEgMzMxLjU1IDczLjcgMzM4LjMzIDczLjdDMzQzLjg4IDczLjcgMzQ5LjE5IDc1LjY3IDM0OS4xOSA4NC41NVY4OC4zOEgzMzcuNDdDMzIzLjQgODguMzggMzEzLjI4IDkzLjA3IDMxMy4yOCAxMDYuMzlaTTI4NS4wMiAxMjAuOTZIMjk1LjAyVjg3LjRDMjk1LjAyIDc5LjYyIDI5OS44MyA3Ni4wNCAzMDYgNzYuMDRDMzA4LjEgNzYuMDQgMzEwLjIgNzYuMTcgMzEyLjQyIDc2LjU0VjY2Ljc5QzMxMC41NyA2Ni4xNyAzMDguODQgNjYuMDUgMzA3LjExIDY2LjA1QzMwMS41NiA2Ni4wNSAyOTcuMjQgNjkuMzggMjk1LjAyIDczLjk1TDI5My43OSA2Ny40MUgyODUuMDNWMTIwLjk2SDI4NS4wMlpNNjM5LjQ5IDEyMC45Nkg2NDkuNDlWODcuNEM2NDkuNDkgNzkuNjIgNjU0LjMgNzYuMDQgNjYwLjQ3IDc2LjA0QzY2Mi41NyA3Ni4wNCA2NjQuNjcgNzYuMTcgNjY2Ljg5IDc2LjU0VjY2Ljc5QzY2NS4wMyA2Ni4xNyA2NjMuMzEgNjYuMDUgNjYxLjU5IDY2LjA1QzY1Ni4wNCA2Ni4wNSA2NTEuNzEgNjkuMzggNjQ5LjQ5IDczLjk1TDY0OC4yNiA2Ny40MUg2MzkuNDlWMTIwLjk2Wk00NTEuNTkgNzYuMTZWNjcuNEg0NDAuNjJWNTIuMUw0MzAuMzggNTMuNzFWNjcuNEg0MjIuNjFWNzYuMTZINDMwLjM4VjExMC4yMkM0MzAuMzggMTE3Ljg3IDQzMy4yMiAxMjIuNDMgNDQ0LjQ1IDEyMi40M0M0NDYuOTIgMTIyLjQzIDQ1MC42MiAxMjEuOTQgNDUyLjg0IDEyMS4zMlYxMTMuNjdDNDUwLjUgMTE0LjI5IDQ0OC4yOCAxMTQuNDEgNDQ2LjY3IDExNC40MUM0NDEuOTggMTE0LjQxIDQ0MC42MiAxMTIuMTkgNDQwLjYyIDEwNy4yNlY3Ni4xNkg0NTEuNTlaTTc1My4xNCA3Ni4xNlY2Ny40SDc0Mi4xNVY1Mi4xTDczMS45MiA1My43MVY2Ny40SDcyNC4xNFY3Ni4xNkg3MzEuOTJWMTEwLjIyQzczMS45MiAxMTcuODcgNzM0Ljc1IDEyMi40MyA3NDUuOTggMTIyLjQzQzc0OC40NSAxMjIuNDMgNzUyLjE1IDEyMS45NCA3NTQuMzggMTIxLjMyVjExMy42N0M3NTIuMDQgMTE0LjI5IDc0OS44MSAxMTQuNDEgNzQ4LjIxIDExNC40MUM3NDMuNTIgMTE0LjQxIDc0Mi4xNSAxMTIuMTkgNzQyLjE1IDEwNy4yNlY3Ni4xNkg3NTMuMTRaTTYwNC4yIDExNC4wNUM1OTQuNTggMTE0LjA1IDU4OC40MSAxMDcuMzggNTg4LjQxIDk0LjA2QzU4OC40MSA4MC43NCA1OTQuODMgNzQuMTkgNjA0LjMzIDc0LjE5QzYxMy44MyA3NC4xOSA2MTkuNjMgODEuMjIgNjE5LjYzIDk0LjY4QzYxOS42MyAxMDguMTQgNjEzLjcgMTE0LjA1IDYwNC4yIDExNC4wNVpNNzgzIDExNC4wNUM3NzMuMzggMTE0LjA1IDc2Ny4yMSAxMDcuMzggNzY3LjIxIDk0LjA2Qzc2Ny4yMSA4MC43NCA3NzMuNjIgNzQuMTkgNzgzLjEzIDc0LjE5Qzc5Mi42NCA3NC4xOSA3OTguNDMgODEuMjIgNzk4LjQzIDk0LjY4Qzc5OC40MyAxMDguMTQgNzkyLjUxIDExNC4wNSA3ODMuMDEgMTE0LjA1SDc4M1pNNjczLjc5IDEyMC45Nkg2ODMuNTRWOTAuMTFDNjgzLjU0IDgxLjIyIDY4Ny4zNiA3NS4wNSA2OTYuNjIgNzUuMDVDNzA1LjI2IDc1LjA1IDcwNy45NyA3OC43NSA3MDcuOTcgODcuNzZWMTIwLjk1SDcxNy45NlY4NC45MkM3MTcuOTYgNzIuNTggNzEyLjc3IDY2LjE2IDcwMS4wNiA2Ni4xNkM2OTMuMDQgNjYuMTYgNjg3LjEyIDY5LjEyIDY4My41NCA3NC4xOEw2ODIuMyA2Ny4zOUg2NzMuNzhWMTIwLjk0TDY3My43OSAxMjAuOTZaTTM3MS44OSAxMjAuOTZIMzgxLjY0VjkwLjExQzM4MS42NCA4MS4yMiAzODUuNDYgNzUuMDUgMzk0LjcyIDc1LjA1QzQwMy4zNiA3NS4wNSA0MDYuMDcgNzguNzUgNDA2LjA3IDg3Ljc2VjEyMC45NUg0MTYuMDZWODQuOTJDNDE2LjA2IDcyLjU4IDQxMC44OCA2Ni4xNiAzOTkuMTYgNjYuMTZDMzkxLjE0IDY2LjE2IDM4NS4yMiA2OS4xMiAzODEuNjQgNzQuMThMMzgwLjQxIDY3LjM5SDM3MS44OVYxMjAuOTRWMTIwLjk2Wk04MTguNDEgMTIwLjk2SDgyOC4xNVY5MC4xMUM4MjguMTUgODEuMjIgODMxLjk4IDc1LjA1IDg0MS4yMyA3NS4wNUM4NDkuODYgNzUuMDUgODUyLjU5IDc4Ljc1IDg1Mi41OSA4Ny43NlYxMjAuOTVIODYyLjU4Vjg0LjkyQzg2Mi41OCA3Mi41OCA4NTcuNCA2Ni4xNiA4NDUuNjggNjYuMTZDODM3LjY2IDY2LjE2IDgzMS43MyA2OS4xMiA4MjguMTYgNzQuMThMODI2LjkzIDY3LjM5SDgxOC40MlYxMjAuOTRMODE4LjQxIDEyMC45NlpNNTE5LjkyIDQ5LjAxVjQwLjM3SDQ2Mi45MVY0OS4wMUg0ODYuMjNWMTIwLjk1SDQ5Ni45N1Y0OS4wMUg1MTkuOTJaTTUyNS4xMSAxMjAuOTZINTM0Ljg2VjkwLjExQzUzNC44NiA4MS4yMiA1MzguNjggNzUuMDUgNTQ3Ljk0IDc1LjA1QzU1Ni41OCA3NS4wNSA1NTkuMjkgNzguNzUgNTU5LjI5IDg3Ljc2VjEyMC45NUg1NjkuMjlWODQuOTJDNTY5LjI5IDcyLjU4IDU2NC4xIDY2LjE2IDU1Mi4zOSA2Ni4xNkM1NDQuMzcgNjYuMTYgNTM4LjQ0IDY5LjEyIDUzNC44NyA3NC4xOFY0MC4zN0g1MjUuMTJWMTIwLjk1TDUyNS4xMSAxMjAuOTZaTTI0NC45MiA4OUgyNjMuOTJWMTA2Ljg5QzI1OC4xMiAxMTEuOTUgMjQ5LjIzIDExMy45MiAyNDIuMDggMTEzLjkyQzIyNC4xOSAxMTMuOTIgMjEzLjk1IDEwMi4zMiAyMTMuOTUgODEuOTZDMjEzLjk1IDYwLjM3IDIyNC45MyA0OC40IDI0MS44NCA0OC40QzI1MS45NiA0OC40IDI1OS40OCA1MS45OCAyNjYuNjQgNTguNzZMMjcyLjkzIDUxLjZDMjY2LjUxIDQ0LjU3IDI1NS41MyAzOS4zOSAyNDIuOTUgMzkuMzlDMjE3LjY1IDM5LjM5IDIwMi43MiA1Ny4wNCAyMDIuNzIgODEuNzFDMjAyLjcyIDEwNi4zOCAyMTUuMTggMTIyLjY4IDI0Mi4yMSAxMjIuNjhDMjU3LjE0IDEyMi42OCAyNjguNzQgMTE2LjE0IDI3NC40MiAxMDkuOTdWODAuNzJIMjQ0LjkzVjg5SDI0NC45MlpNNjA0Ljk0IDY2LjA1QzU4Ny4xNyA2Ni4wNSA1NzcuOTIgNzguMjYgNTc3LjkyIDk0LjQzQzU3Ny45MiAxMTAuNiA1ODcuMTcgMTIyLjE5IDYwMy43MSAxMjIuMTlDNjIwLjI1IDEyMi4xOSA2MzAuNDggMTExLjMzIDYzMC40OCA5NC4xOEM2MzAuNDggNzcuMDMgNjIwLjk4IDY2LjA1IDYwNC45NCA2Ni4wNVpNNzgzLjc0IDY2LjA1Qzc2NS45NyA2Ni4wNSA3NTYuNzEgNzguMjYgNzU2LjcxIDk0LjQzQzc1Ni43MSAxMTAuNiA3NjUuOTcgMTIyLjE5IDc4Mi41IDEyMi4xOUM3OTkuMDMgMTIyLjE5IDgwOS4yOCAxMTEuMzMgODA5LjI4IDk0LjE4QzgwOS4yOCA3Ny4wMyA3OTkuNzggNjYuMDUgNzgzLjc0IDY2LjA1WiIgZmlsbD0iIzIzMUYyMCI+PC9wYXRoPg0KPHBhdGggZD0iTTgwLjMzIDUwLjExQzkyLjk1IDU0LjEyIDEwMi45OCA2My41MyAxMDkuNzQgNzYuODlDMTEwLjY1IDc4LjY4IDExMS4xMSA4MS4zNyAxMTAuNjIgODIuOTVDMTEwLjg1IDgyLjMyIDExMS4wNyA4MS43IDExMS4yNyA4MS4wNkMxMjcuNDcgMzAuMTIgNzAuMDggLTQuMDE5OTggNDAuOTUgMTEuMjVDNDAuNCAxMS41NiAzOS44NCAxMS44NiAzOS4yOCAxMi4xOUMxLjc5IDM0LjUzIC0xMC44MyA4Mi42NSAxMC41MiAxMjAuNDVDLTQuNzcgOTEuMzIgMjkuMzggMzMuOTEgODAuMzIgNTAuMTFIODAuMzNaIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMTM0OV8xMTUpIj48L3BhdGg+DQo8cGF0aCBkPSJNNDkuMzkgODEuMDU5OUM1My40IDY4LjQzOTkgNjIuODEgNTguMzk5OSA3Ni4xNyA1MS42NDk5Qzc3Ljk2IDUwLjc0OTkgODAuNjUgNTAuMjc5OSA4Mi4yMyA1MC43Njk5QzgxLjYxIDUwLjUzOTkgODAuOTggNTAuMzE5OSA4MC4zNCA1MC4xMTk5QzI5LjQgMzMuOTE5OSAtNC43NSA5MS4zMDk5IDEwLjUzIDEyMC40NEMxMC44NCAxMjEgMTEuMTQgMTIxLjU1IDExLjQ3IDEyMi4xMUMzMy44MSAxNTkuNiA4MS45MyAxNzIuMjIgMTE5LjczIDE1MC44N0M5MC42IDE2Ni4xNiAzMy4xOSAxMzIuMDEgNDkuMzkgODEuMDY5OVY4MS4wNTk5WiIgZmlsbD0idXJsKCNwYWludDFfbGluZWFyXzEzNDlfMTE1KSI+PC9wYXRoPg0KPHBhdGggZD0iTTgwLjM0IDExMkM2Ny43MiAxMDcuOTkgNTcuNjkgOTguNTc5OSA1MC45MyA4NS4yMTk5QzUwLjAzIDgzLjQyOTkgNDkuNTYgODAuNzM5OSA1MC4wNSA3OS4xNTk5QzQ5LjgyIDc5Ljc3OTkgNDkuNiA4MC40MDk5IDQ5LjQgODEuMDQ5OUMzMy4yIDEzMS45OSA5MC41OSAxNjYuMTQgMTE5LjcyIDE1MC44NkMxMjAuMjcgMTUwLjU1IDEyMC44NCAxNTAuMjUgMTIxLjM5IDE0OS45MkMxNTguODggMTI3LjU4IDE3MS41IDc5LjQ2OTkgMTUwLjE1IDQxLjY1OTlDMTY1LjQ0IDcwLjc4OTkgMTMxLjI5IDEyOC4yIDgwLjM1IDExMS45OUw4MC4zNCAxMTJaIiBmaWxsPSJ1cmwoI3BhaW50Ml9saW5lYXJfMTM0OV8xMTUpIj48L3BhdGg+DQo8cGF0aCBkPSJNMTExLjI4IDgxLjA2QzEwNy4yNyA5My42OCA5Ny44NiAxMDMuNzIgODQuNSAxMTAuNDdDODIuNzEgMTExLjM4IDgwLjAyIDExMS44NCA3OC40NCAxMTEuMzVDNzkuMDYgMTExLjU4IDc5LjY5IDExMS44IDgwLjMzIDExMkMxMzEuMjcgMTI4LjIgMTY1LjQxIDcwLjgwOTkgMTUwLjE0IDQxLjY4QzE0OS44MyA0MS4xMiAxNDkuNTMgNDAuNTYgMTQ5LjIgNDAuMDFDMTI2Ljg2IDIuNTE5OTUgNzguNzQgLTEwLjEgNDAuOTQgMTEuMjVDNzAuMDcgLTQuMDQwMDQgMTI3LjQ4IDMwLjExIDExMS4yOCA4MS4wNVY4MS4wNloiIGZpbGw9InVybCgjcGFpbnQzX2xpbmVhcl8xMzQ5XzExNSkiPjwvcGF0aD4NCjxkZWZzPg0KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzEzNDlfMTE1IiB4MT0iMTEzLjg4IiB5MT0iNTguMzYiIHgyPSItMS4wNiIgeTI9IjY2LjQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4NCjxzdG9wIHN0b3AtY29sb3I9IiM1MjJFOTEiPjwvc3RvcD4NCjxzdG9wIG9mZnNldD0iMC4xMiIgc3RvcC1jb2xvcj0iIzUyMkU5MSI+PC9zdG9wPg0KPHN0b3Agb2Zmc2V0PSIwLjMxIiBzdG9wLWNvbG9yPSIjNkI0REExIj48L3N0b3A+DQo8c3RvcCBvZmZzZXQ9IjAuNTUiIHN0b3AtY29sb3I9IiM4ODcwQjMiPjwvc3RvcD4NCjxzdG9wIG9mZnNldD0iMC43NCIgc3RvcC1jb2xvcj0iIzk5ODZCRSI+PC9zdG9wPg0KPHN0b3Agb2Zmc2V0PSIwLjg3IiBzdG9wLWNvbG9yPSIjQTA4RUMzIj48L3N0b3A+DQo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM5MTdEQkEiPjwvc3RvcD4NCjwvbGluZWFyR3JhZGllbnQ+DQo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MV9saW5lYXJfMTM0OV8xMTUiIHgxPSI1Ny42NCIgeTE9IjQ3LjUwOTkiIHgyPSI2NS42OCIgeTI9IjE2Mi40NSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPg0KPHN0b3Agc3RvcC1jb2xvcj0iIzUyMkU5MSI+PC9zdG9wPg0KPHN0b3Agb2Zmc2V0PSIwLjEyIiBzdG9wLWNvbG9yPSIjNTIyRTkxIj48L3N0b3A+DQo8c3RvcCBvZmZzZXQ9IjAuMzEiIHN0b3AtY29sb3I9IiM2QjREQTEiPjwvc3RvcD4NCjxzdG9wIG9mZnNldD0iMC41NSIgc3RvcC1jb2xvcj0iIzg4NzBCMyI+PC9zdG9wPg0KPHN0b3Agb2Zmc2V0PSIwLjc0IiBzdG9wLWNvbG9yPSIjOTk4NkJFIj48L3N0b3A+DQo8c3RvcCBvZmZzZXQ9IjAuODciIHN0b3AtY29sb3I9IiNBMDhFQzMiPjwvc3RvcD4NCjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzkxN0RCQSI+PC9zdG9wPg0KPC9saW5lYXJHcmFkaWVudD4NCjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQyX2xpbmVhcl8xMzQ5XzExNSIgeDE9IjQ2Ljc5IiB5MT0iMTAzLjc2IiB4Mj0iMTYxLjczIiB5Mj0iOTUuNzE5OSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPg0KPHN0b3Agc3RvcC1jb2xvcj0iIzUyMkU5MSI+PC9zdG9wPg0KPHN0b3Agb2Zmc2V0PSIwLjEyIiBzdG9wLWNvbG9yPSIjNTIyRTkxIj48L3N0b3A+DQo8c3RvcCBvZmZzZXQ9IjAuMzEiIHN0b3AtY29sb3I9IiM2QjREQTEiPjwvc3RvcD4NCjxzdG9wIG9mZnNldD0iMC41NSIgc3RvcC1jb2xvcj0iIzg4NzBCMyI+PC9zdG9wPg0KPHN0b3Agb2Zmc2V0PSIwLjc0IiBzdG9wLWNvbG9yPSIjOTk4NkJFIj48L3N0b3A+DQo8c3RvcCBvZmZzZXQ9IjAuODciIHN0b3AtY29sb3I9IiNBMDhFQzMiPjwvc3RvcD4NCjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzkxN0RCQSI+PC9zdG9wPg0KPC9saW5lYXJHcmFkaWVudD4NCjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQzX2xpbmVhcl8xMzQ5XzExNSIgeDE9IjEwMy4wNCIgeTE9IjExNC42IiB4Mj0iOTUiIHkyPSItMC4zNDAwMzciIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4NCjxzdG9wIHN0b3AtY29sb3I9IiM1MjJFOTEiPjwvc3RvcD4NCjxzdG9wIG9mZnNldD0iMC4xMiIgc3RvcC1jb2xvcj0iIzUyMkU5MSI+PC9zdG9wPg0KPHN0b3Agb2Zmc2V0PSIwLjMxIiBzdG9wLWNvbG9yPSIjNkI0REExIj48L3N0b3A+DQo8c3RvcCBvZmZzZXQ9IjAuNTUiIHN0b3AtY29sb3I9IiM4ODcwQjMiPjwvc3RvcD4NCjxzdG9wIG9mZnNldD0iMC43NCIgc3RvcC1jb2xvcj0iIzk5ODZCRSI+PC9zdG9wPg0KPHN0b3Agb2Zmc2V0PSIwLjg3IiBzdG9wLWNvbG9yPSIjQTA4RUMzIj48L3N0b3A+DQo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM5MTdEQkEiPjwvc3RvcD4NCjwvbGluZWFyR3JhZGllbnQ+DQo8L2RlZnM+DQo8L3N2Zz4=" alt="Grant Thornton"></span>
+  <span class="topo-divisor" aria-hidden="true"></span>
+  <span class="topo-produto">Redação de memorandos</span>
+  <span class="topo-area">Strategy and Transactions · Suporte à auditoria</span>
+  <span class="topo-espaco"></span>
+  <div class="modelo" id="modelo"></div>
+  <span class="topo-analista" id="topo-analista"></span>
+</header>
+
+<p class="faixa-ficticio" id="faixa-ficticio" role="note">
+  <span class="faixa-rotulo">Caso fictício</span>
+  <span>Empresas, fundo, avaliadores, analistas e valores são ilustrativos, e as seções do memorando seguem uma hipótese, porque o template da Grant Thornton é mapeado na etapa 1.</span>
+</p>
+
+<nav class="abas" aria-label="Telas do protótipo">
+  <div class="abas-lista" id="abas-lista" role="tablist"></div>
+</nav>
+</div>
+
+<main id="tela" tabindex="-1"></main>
+
+<footer class="rodape">
+  Protótipo de demonstração. A solução real é instalada no servidor da Grant Thornton e acessada pelo navegador, na rede interna, com a conta corporativa do analista.
+</footer>
+
+<script>
+/* casos.js — os casos fictícios do protótipo: insumos, ficha do caso e texto de cada seção do rascunho.
+ *
+ * Tudo aqui é ilustrativo. Os números foram calculados fora, com a conta do fluxo de caixa livre
+ * (EBITDA menos IR e CS, CAPEX e variação do capital de giro), e o teste do autor refaz essa aritmética.
+ *
+ * Como o texto vira rascunho:
+ *   {receita.2027}  é um campo da ficha. Na montagem, o rascunho troca pelo valor formatado
+ *                   ("R$ 412.300 mil"), e a conferência acha esse valor na ficha.
+ *   24,1%           escrito direto no texto, sem chaves, não tem campo. É assim que se simula o modelo de
+ *                   linguagem trazendo um valor que não existe na ficha, e a conferência o marca.
+ *
+ * Os dois casos navegáveis são o principal (CPC 46, gerado na tela Novo memorando) e o retomado (CPC 01,
+ * aberto pelo histórico). Os outros casos do histórico só aparecem na lista.
+ *
+ * Saída: window.RM_CASOS
+ */
+(function () {
+  'use strict';
+
+  const HOJE = '18/11/2026';
+  const ANALISTA_CONECTADO = 'Rafael Quintana';
+
+  const CPCS = {
+    '46': 'Mensuração do valor justo',
+    '01': 'Redução ao valor recuperável de ativos',
+    '15': 'Combinação de negócios',
+  };
+
+  // Linhas da aba "Projeções" do modelo GT, na ordem da planilha, a partir da linha 5.
+  // A coluna C guarda o ano-base e as colunas D a H, os cinco anos projetados.
+  const LINHAS_DE_PROJECAO = [
+    { chave: 'receita', rotulo: 'Receita líquida', unidade: 'mil' },
+    { chave: 'crescimento', rotulo: 'Crescimento da receita', unidade: 'pct' },
+    { chave: 'custos', rotulo: 'Custo dos produtos vendidos', unidade: 'mil' },
+    { chave: 'despesas', rotulo: 'Despesas operacionais', unidade: 'mil' },
+    { chave: 'ebitda', rotulo: 'EBITDA', unidade: 'mil' },
+    { chave: 'margem', rotulo: 'Margem EBITDA', unidade: 'pct' },
+    { chave: 'da', rotulo: 'Depreciação e amortização', unidade: 'mil' },
+    { chave: 'ir', rotulo: 'IR e CS', unidade: 'mil' },
+    { chave: 'capex', rotulo: 'CAPEX', unidade: 'mil' },
+    { chave: 'cg', rotulo: 'Variação do capital de giro', unidade: 'mil' },
+    { chave: 'fcl', rotulo: 'Fluxo de caixa livre', unidade: 'mil' },
+  ];
+  const PRIMEIRA_LINHA_DE_PROJECAO = 5;
+  const COLUNAS_DOS_ANOS = ['D', 'E', 'F', 'G', 'H'];
+
+  /** Um campo da ficha por linha e por ano da aba "Projeções". */
+  function camposDasProjecoes(anos, series) {
+    const campos = [];
+    LINHAS_DE_PROJECAO.forEach((linha, i) => {
+      anos.forEach((ano, j) => {
+        campos.push({
+          id: `${linha.chave}.${ano}`, rotulo: `${linha.rotulo} de ${ano}`, linha: linha.rotulo, unidade: linha.unidade,
+          valor: series[linha.chave][j],
+          origem: { arquivo: 'gt', aba: 'Projeções', celula: COLUNAS_DOS_ANOS[j] + (PRIMEIRA_LINHA_DE_PROJECAO + i) },
+        });
+      });
+    });
+    return campos;
+  }
+
+  const CABECALHO_DAS_PROJECOES = (anoBase, anos) => ({
+    linha: 4,
+    colunas: Object.fromEntries([['C', String(anoBase)], ...anos.map((ano, j) => [COLUNAS_DOS_ANOS[j], String(ano)])]),
+  });
+
+  // ===========================================================================================
+  // Caso principal: marcação anual das cotas de uma empresa investida de um fundo, sob o CPC 46
+  // ===========================================================================================
+  const EMPRESA = 'Saguaraí Embalagens S.A.';
+  const FUNDO = 'Fundo Tabocal IV FIP Multiestratégia';
+  const AVALIADOR = 'Pedra Lisa Avaliações Ltda.';
+  const ANOS = [2027, 2028, 2029, 2030, 2031];
+
+  const SERIES_PRINCIPAL = {
+    receita: [412300, 443200, 472000, 498000, 520400],
+    crescimento: [8.5, 7.5, 6.5, 5.5, 4.5],
+    custos: [255626, 273011, 288864, 302784, 314842],
+    despesas: [69266, 73571, 77408, 80676, 83264],
+    ebitda: [87408, 96618, 105728, 114540, 122294],
+    margem: [21.2, 21.8, 22.4, 23.0, 23.5],
+    da: [17317, 18614, 19824, 20916, 21857],
+    ir: [23831, 26521, 29207, 31832, 34149],
+    capex: [22676, 22160, 22656, 22908, 23418],
+    cg: [4522, 4326, 4032, 3640, 3136],
+    fcl: [36379, 43611, 49833, 56160, 61591],
+  };
+
+  const PRINCIPAL = {
+    id: 'saguarai',
+    codigo: 'ST-2026-131',
+    empresa: EMPRESA,
+    cliente: FUNDO,
+    avaliador: AVALIADOR,
+    cpc: '46',
+    objeto: 'Marcação anual das cotas do fundo',
+    pasta: '\\\\gt-servidor\\strategy-transactions\\suporte-auditoria\\2026\\Tabocal IV - Saguarai',
+    arquivos: {
+      laudo: { nome: 'Laudo de avaliação - Saguaraí - 30-09-2026.pdf', tipo: 'PDF', papel: 'Laudo de avaliação', detalhe: '46 páginas, com camada de texto' },
+      avaliador: { nome: 'Modelo do avaliador - Saguaraí.xlsx', tipo: 'XLSX', papel: 'Modelo do avaliador', detalhe: '7 abas' },
+      gt: { nome: 'Modelo GT - Saguaraí - 30-09-2026.xlsx', tipo: 'XLSX', papel: 'Modelo GT', detalhe: 'padrão da Grant Thornton, 4 abas' },
+    },
+    anoBase: 2026,
+    anos: ANOS,
+    linhasDaTabela: LINHAS_DE_PROJECAO,
+    campos: [
+      { id: 'data.base', rotulo: 'Data-base', unidade: 'data', valor: '30/09/2026', origem: { arquivo: 'laudo', pagina: 1 } },
+      { id: 'participacao', rotulo: 'Participação do fundo no capital', unidade: 'pct', valor: 62.5, origem: { arquivo: 'laudo', pagina: 4 } },
+      { id: 'divida.liquida', rotulo: 'Dívida líquida', unidade: 'mil', valor: 142000, origem: { arquivo: 'laudo', pagina: 40 } },
+      { id: 'valor.patrimonio', rotulo: 'Valor do patrimônio', unidade: 'mil', valor: 388347, origem: { arquivo: 'laudo', pagina: 40 } },
+      { id: 'valor.participacao', rotulo: 'Valor justo da participação do fundo', unidade: 'mil', valor: 242717, origem: { arquivo: 'laudo', pagina: 40 } },
+      { id: 'vp.fluxos', rotulo: 'Valor presente dos fluxos projetados', linha: 'Valor presente dos fluxos', unidade: 'mil', valor: 166970, origem: { arquivo: 'avaliador', aba: 'Resumo', celula: 'D10' } },
+      { id: 'vp.perpetuidade', rotulo: 'Valor presente da perpetuidade', linha: 'Valor presente da perpetuidade', unidade: 'mil', valor: 363377, origem: { arquivo: 'avaliador', aba: 'Resumo', celula: 'D11' } },
+      { id: 'valor.empresa', rotulo: 'Valor da empresa', linha: 'Valor da empresa', unidade: 'mil', valor: 530347, origem: { arquivo: 'avaliador', aba: 'Resumo', celula: 'D12' } },
+      { id: 'receita.2026', rotulo: 'Receita líquida estimada de 2026', linha: 'Receita líquida', unidade: 'mil', valor: 380000, origem: { arquivo: 'gt', aba: 'Projeções', celula: 'C5' } },
+      ...camposDasProjecoes(ANOS, SERIES_PRINCIPAL),
+      { id: 'taxa.livre', rotulo: 'Taxa livre de risco', linha: 'Taxa livre de risco', unidade: 'pct', valor: 4.4, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C5' } },
+      { id: 'premio.mercado', rotulo: 'Prêmio de risco de mercado', linha: 'Prêmio de risco de mercado', unidade: 'pct', valor: 5.9, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C6' } },
+      { id: 'beta', rotulo: 'Beta realavancado', linha: 'Beta realavancado', unidade: 'num', valor: 1.08, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C7' } },
+      { id: 'risco.pais', rotulo: 'Prêmio de risco-país', linha: 'Prêmio de risco-país', unidade: 'pct', valor: 2.7, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C8' } },
+      { id: 'ke', rotulo: 'Custo de capital próprio', linha: 'Custo de capital próprio', unidade: 'pct', valor: 15.1, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C10' } },
+      { id: 'kd', rotulo: 'Custo da dívida após impostos', linha: 'Custo da dívida após impostos', unidade: 'pct', valor: 9.4, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C12' } },
+      { id: 'estrutura.divida', rotulo: 'Dívida na estrutura de capital', linha: 'Dívida / (dívida + patrimônio)', unidade: 'pct', valor: 30.0, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C13' } },
+      { id: 'wacc', rotulo: 'Taxa de desconto (custo médio ponderado de capital)', linha: 'Custo médio ponderado de capital', unidade: 'pct', valor: 13.4, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C15' } },
+      { id: 'perpetuidade', rotulo: 'Crescimento na perpetuidade', linha: 'Crescimento na perpetuidade', unidade: 'pct', valor: 4.0, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C17' } },
+    ],
+    planilhas: {
+      gt: {
+        'Projeções': CABECALHO_DAS_PROJECOES(2026, ANOS),
+        'Taxa de desconto': { linha: 4, colunas: { C: 'Valor' } },
+      },
+      avaliador: { 'Resumo': { linha: 9, colunas: { D: 'R$ mil' } } },
+    },
+    laudo: {
+      paginas: {
+        1: `Laudo de avaliação econômico-financeira da ${EMPRESA}, preparado pela ${AVALIADOR} para o ${FUNDO}, com data-base em 30/09/2026.`,
+        4: `O ${FUNDO} detém 62,5% do capital social da ${EMPRESA}, e este laudo apura o valor justo dessa participação na data-base de 30/09/2026, para fins de mensuração das cotas do fundo.`,
+        9: `A ${EMPRESA} fabrica embalagens de papelão ondulado em duas plantas industriais, localizadas em Joinville (SC) e em Sorocaba (SP), e atende clientes dos setores de alimentos, bebidas e higiene pessoal. A carteira é concentrada, e o maior cliente responde por cerca de 20% das vendas. A gestão permanece com os sócios fundadores desde a entrada do fundo no capital da companhia.`,
+        23: 'A receita foi projetada a partir do volume vendido, em toneladas, e do preço médio por tonelada. O crescimento de 8,5% em 2027 reflete a entrada em operação da segunda onduladeira da planta de Sorocaba, e a taxa converge para 4,5% em 2031. Os custos acompanham o preço das aparas e do papel reciclado, e na perpetuidade adotou-se crescimento nominal de 4,0%.',
+        28: 'O EBITDA projetado passa de R$ 87.408 mil em 2027 para R$ 122.294 mil em 2031, e o fluxo de caixa livre alcança R$ 61.591 mil no último ano projetado.',
+        34: 'Os fluxos foram descontados pela taxa de 13,4%, que corresponde ao custo médio ponderado de capital nominal em reais, com custo de capital próprio de 15,1%, custo da dívida após impostos de 9,4% e estrutura de capital com 30,0% de dívida, obtida da média de empresas comparáveis do setor de embalagens.',
+        40: 'O valor da empresa apurado é de R$ 530.347 mil. Deduzida a dívida líquida de R$ 142.000 mil, o valor do patrimônio é de R$ 388.347 mil, e o valor justo da participação de 62,5% detida pelo fundo é de R$ 242.717 mil.',
+      },
+      secoes: {
+        descricao: { titulo: 'Descrição da empresa', paginas: '8 a 10', pagina: 9 },
+        premissas: { titulo: 'Premissas', paginas: '22 a 26', pagina: 23 },
+        projecoes: { titulo: 'Projeções', paginas: '27 a 31', pagina: 28 },
+        taxa: { titulo: 'Taxa de desconto', paginas: '33 a 35', pagina: 34 },
+      },
+    },
+    escopos: {
+      completo: {
+        rotulo: 'Metodologia, premissas, projeções e taxa de desconto',
+        apoio: 'Inclui a reperformance dos cálculos do avaliador no modelo GT.',
+        blocos: [
+          `Revisamos o laudo de avaliação emitido pela ${AVALIADOR}, com data-base em {data.base}, que apurou o valor justo de {valor.participacao} para a participação de {participacao} detida pelo fundo no capital da ${EMPRESA} A revisão compreendeu a metodologia de avaliação, as premissas operacionais, as projeções financeiras e a taxa de desconto, e incluiu a reperformance dos cálculos do avaliador no modelo GT.`,
+          'O avaliador adotou a abordagem de receita, pelo método do fluxo de caixa descontado, e apurou o valor da empresa de {valor.empresa}, do qual deduziu a dívida líquida de {divida.liquida} para chegar ao valor do patrimônio de {valor.patrimonio}.',
+        ],
+      },
+      limitado: {
+        rotulo: 'Metodologia e taxa de desconto',
+        apoio: 'Considera as projeções conforme apresentadas pela administração.',
+        blocos: [
+          `Revisamos o laudo de avaliação emitido pela ${AVALIADOR}, com data-base em {data.base}, que apurou o valor justo de {valor.participacao} para a participação de {participacao} detida pelo fundo no capital da ${EMPRESA} A revisão compreendeu a metodologia de avaliação e a taxa de desconto, e as projeções financeiras foram consideradas conforme apresentadas pela administração da companhia.`,
+          'O avaliador adotou a abordagem de receita, pelo método do fluxo de caixa descontado, e apurou o valor da empresa de {valor.empresa}, do qual deduziu a dívida líquida de {divida.liquida} para chegar ao valor do patrimônio de {valor.patrimonio}.',
+        ],
+      },
+    },
+    documentos: [
+      { texto: `Laudo de avaliação emitido pela ${AVALIADOR}, com data-base em {data.base}`, fixo: true },
+      { texto: 'Modelo de avaliação do avaliador, em planilha', fixo: true },
+      { texto: `Demonstrações financeiras auditadas da ${EMPRESA} referentes a 2025` },
+      { texto: 'Orçamento de 2027 aprovado pelo conselho de administração da companhia' },
+      { texto: 'Balancete da companhia em {data.base}' },
+      { texto: 'Ata do comitê de investimentos do fundo que aprovou o laudo' },
+    ],
+    secoes: [
+      {
+        id: 'objetivo', titulo: 'Objetivo', origem: 'regra', como: 'A seção sai do texto fixo da biblioteca de textos padrão.',
+        blocos: [`Este memorando registra a revisão, pela área de Strategy and Transactions da Grant Thornton, do laudo de avaliação utilizado pela administração do ${FUNDO} na mensuração do valor justo da participação detida na ${EMPRESA} O objetivo é apoiar a equipe de auditoria na avaliação da razoabilidade desse valor, que integra a marcação anual das cotas do fundo.`],
+      },
+      { id: 'escopo', titulo: 'Escopo da revisão', origem: 'regra', como: 'A seção usa o texto padrão do escopo informado pelo analista, completado com a ficha do caso.', especial: 'escopo' },
+      { id: 'documentacao', titulo: 'Documentação recebida', origem: 'regra', como: 'A seção lista a documentação informada pelo analista.', especial: 'documentacao' },
+      {
+        id: 'normativo', titulo: 'Base normativa: CPC 46', origem: 'regra', como: 'A seção usa o texto normativo do CPC 46, da biblioteca de textos padrão.',
+        blocos: [
+          'O Pronunciamento Técnico CPC 46 – Mensuração do Valor Justo define valor justo como o preço que seria recebido pela venda de um ativo ou que seria pago pela transferência de um passivo em uma transação não forçada entre participantes do mercado na data de mensuração.',
+          'O pronunciamento classifica as informações utilizadas na mensuração em três níveis de hierarquia. A avaliação pelo fluxo de caixa descontado depende de projeções e de uma taxa de desconto que não são observáveis no mercado, de modo que se enquadra no nível 3, para o qual o pronunciamento exige que as premissas reflitam o que os participantes do mercado considerariam ao precificar o ativo.',
+        ],
+      },
+      {
+        id: 'descricao', titulo: 'Descrição da empresa', origem: 'modelo', fonte: 'descricao',
+        blocos: [
+          `A ${EMPRESA} fabrica embalagens de papelão ondulado para os setores de alimentos, bebidas e higiene pessoal, em duas plantas industriais localizadas em Joinville (SC) e em Sorocaba (SP). A receita líquida estimada para 2026 é de {receita.2026}, e a principal cliente, Distribuidora Marupiara S.A., responde por cerca de um quinto das vendas.`,
+          'O fundo detém {participacao} do capital da companhia, e a gestão permanece com os sócios fundadores desde a entrada do fundo no capital, conforme a descrição apresentada pelo avaliador.',
+        ],
+      },
+      {
+        id: 'premissas', titulo: 'Premissas da avaliação', origem: 'modelo', fonte: 'premissas',
+        blocos: [
+          'O avaliador projetou a receita líquida a partir do volume vendido e do preço médio por tonelada, com crescimento de {crescimento.2027} em 2027, impulsionado pela entrada em operação da segunda onduladeira da planta de Sorocaba, e com redução gradual da taxa até {crescimento.2031} em 2031.',
+          'Os custos dos produtos vendidos partem de {custos.2027} em 2027 e acompanham o preço das aparas e do papel reciclado, ao passo que as despesas operacionais, de {despesas.2027} no primeiro ano projetado, refletem os ganhos de escala previstos pela administração. Na perpetuidade, o avaliador adotou crescimento nominal de {perpetuidade}.',
+        ],
+      },
+      {
+        id: 'pfi', titulo: 'Projeções financeiras (PFI)', origem: 'modelo', fonte: 'projecoes',
+        blocos: [
+          'As projeções indicam que a receita líquida passa de {receita.2027} em 2027 para {receita.2031} em 2031, e que o EBITDA cresce de {ebitda.2027} para {ebitda.2031} no mesmo período, com a margem EBITDA passando de {margem.2027} para 24,1% em 2031.',
+          'O CAPEX projetado varia entre {capex.2028} e {capex.2031} por ano, e a variação do capital de giro diminui de {cg.2027} para {cg.2031}, acompanhando a desaceleração do crescimento da receita. O fluxo de caixa livre alcança {fcl.2031} em 2031.',
+        ],
+      },
+      {
+        id: 'tabela', titulo: 'Tabela de projeções', origem: 'regra', como: 'A tabela é preenchida com os valores do modelo GT.',
+        blocos: ['A tabela a seguir reproduz as projeções do modelo GT, em R$ mil, para os cinco anos do período projetivo.'], tabela: true,
+      },
+      {
+        id: 'taxa', titulo: 'Taxa de desconto', origem: 'modelo', fonte: 'taxa',
+        blocos: [
+          'O avaliador descontou os fluxos de caixa pelo custo médio ponderado de capital, de {wacc}, em termos nominais e em reais. O custo de capital próprio, de {ke}, foi estimado pelo modelo de precificação de ativos, com taxa livre de risco de {taxa.livre}, beta realavancado de {beta}, prêmio de risco de mercado de {premio.mercado} e prêmio de risco-país de {risco.pais}, e convertido para reais pelo diferencial de inflação.',
+          'O custo da dívida após impostos, de {kd}, foi ponderado pela estrutura de capital com {estrutura.divida} de dívida, que o avaliador obteve da média de empresas comparáveis do setor de embalagens.',
+        ],
+      },
+      { id: 'conclusao', titulo: 'Conclusão', origem: 'analista', como: 'A seção fica reservada ao analista.' },
+    ],
+    estadoInicial: {
+      entradas: { modo: 'pasta', cpc: '46', escopo: 'completo', documentos: [true, true, true, true, true, false] },
+      entradasGeradas: null,
+      gerado: false,
+      versao: 0,
+      dataGeracao: null,
+      analista: ANALISTA_CONECTADO,
+      retomadoDe: null,
+      edicoes: {},
+      revisadas: {},
+      ultimaSecao: null,
+      baixadoEm: null,
+      registro: [],
+    },
+  };
+
+  // ===========================================================================================
+  // Caso retomado: teste de redução ao valor recuperável de uma unidade com ágio, sob o CPC 01
+  // ===========================================================================================
+  const EMPRESA_2 = 'Cerâmica Brejaúva S.A.';
+  const AVALIADOR_2 = 'Ribeira Consultoria Financeira Ltda.';
+  const ANALISTA_ANTERIOR = 'Beatriz Okumura';
+
+  const SERIES_RETOMADO = {
+    receita: [226800, 238100, 248800, 258800, 267900],
+    crescimento: [6.0, 5.0, 4.5, 4.0, 3.5],
+    custos: [149688, 156670, 162964, 168996, 174135],
+    despesas: [31752, 32858, 33837, 34938, 35899],
+    ebitda: [45360, 48572, 51999, 54866, 57866],
+    margem: [20.0, 20.4, 20.9, 21.2, 21.6],
+    da: [11340, 11905, 12440, 12940, 13395],
+    ir: [11567, 12467, 13450, 14255, 15120],
+    capex: [9072, 9048, 8957, 9058, 9376],
+    cg: [1280, 1130, 1070, 1000, 910],
+    fcl: [23441, 25927, 28522, 30553, 32460],
+  };
+
+  const RETOMADO = {
+    id: 'brejauva',
+    codigo: 'ST-2026-127',
+    empresa: EMPRESA_2,
+    cliente: EMPRESA_2,
+    avaliador: AVALIADOR_2,
+    cpc: '01',
+    objeto: 'Teste anual de redução ao valor recuperável',
+    pasta: '\\\\gt-servidor\\strategy-transactions\\suporte-auditoria\\2026\\Brejauva - teste de recuperabilidade',
+    arquivos: {
+      laudo: { nome: 'Laudo de valor em uso - Brejaúva - 31-08-2026.pdf', tipo: 'PDF', papel: 'Laudo de avaliação', detalhe: '32 páginas, com camada de texto' },
+      avaliador: { nome: 'Modelo do avaliador - Brejaúva.xlsx', tipo: 'XLSX', papel: 'Modelo do avaliador', detalhe: '5 abas' },
+      gt: { nome: 'Modelo GT - Brejaúva - 31-08-2026.xlsx', tipo: 'XLSX', papel: 'Modelo GT', detalhe: 'padrão da Grant Thornton, 4 abas' },
+    },
+    anoBase: 2026,
+    anos: ANOS,
+    linhasDaTabela: LINHAS_DE_PROJECAO,
+    campos: [
+      { id: 'data.base', rotulo: 'Data-base', unidade: 'data', valor: '31/08/2026', origem: { arquivo: 'laudo', pagina: 1 } },
+      { id: 'valor.contabil', rotulo: 'Valor contábil da unidade, com o ágio', unidade: 'mil', valor: 286400, origem: { arquivo: 'laudo', pagina: 30 } },
+      { id: 'folga', rotulo: 'Diferença entre o valor em uso e o valor contábil', unidade: 'mil', valor: 27712, origem: { arquivo: 'laudo', pagina: 30 } },
+      { id: 'vp.fluxos', rotulo: 'Valor presente dos fluxos projetados', linha: 'Valor presente dos fluxos', unidade: 'mil', valor: 99997, origem: { arquivo: 'avaliador', aba: 'Resumo', celula: 'D10' } },
+      { id: 'vp.perpetuidade', rotulo: 'Valor presente da perpetuidade', linha: 'Valor presente da perpetuidade', unidade: 'mil', valor: 214115, origem: { arquivo: 'avaliador', aba: 'Resumo', celula: 'D11' } },
+      { id: 'valor.uso', rotulo: 'Valor em uso da unidade', linha: 'Valor em uso', unidade: 'mil', valor: 314112, origem: { arquivo: 'avaliador', aba: 'Resumo', celula: 'D12' } },
+      { id: 'receita.2026', rotulo: 'Receita líquida estimada de 2026', linha: 'Receita líquida', unidade: 'mil', valor: 214000, origem: { arquivo: 'gt', aba: 'Projeções', celula: 'C5' } },
+      ...camposDasProjecoes(ANOS, SERIES_RETOMADO),
+      { id: 'ke', rotulo: 'Custo de capital próprio', linha: 'Custo de capital próprio', unidade: 'pct', valor: 13.0, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C10' } },
+      { id: 'kd', rotulo: 'Custo da dívida após impostos', linha: 'Custo da dívida após impostos', unidade: 'pct', valor: 8.6, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C12' } },
+      { id: 'estrutura.divida', rotulo: 'Dívida na estrutura de capital', linha: 'Dívida / (dívida + patrimônio)', unidade: 'pct', valor: 25.0, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C13' } },
+      { id: 'wacc', rotulo: 'Taxa de desconto após impostos', linha: 'Taxa após impostos', unidade: 'pct', valor: 11.9, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C15' } },
+      { id: 'taxa.antes', rotulo: 'Taxa de desconto antes dos impostos', linha: 'Taxa antes dos impostos', unidade: 'pct', valor: 15.8, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C16' } },
+      { id: 'perpetuidade', rotulo: 'Crescimento na perpetuidade', linha: 'Crescimento na perpetuidade', unidade: 'pct', valor: 3.0, origem: { arquivo: 'gt', aba: 'Taxa de desconto', celula: 'C17' } },
+    ],
+    planilhas: {
+      gt: {
+        'Projeções': CABECALHO_DAS_PROJECOES(2026, ANOS),
+        'Taxa de desconto': { linha: 4, colunas: { C: 'Valor' } },
+      },
+      avaliador: { 'Resumo': { linha: 9, colunas: { D: 'R$ mil' } } },
+    },
+    laudo: {
+      paginas: {
+        1: `Laudo de avaliação do valor em uso da unidade de revestimentos da ${EMPRESA_2}, preparado pela ${AVALIADOR_2}, com data-base em 31/08/2026.`,
+        7: `A ${EMPRESA_2} produz revestimentos cerâmicos e porcelanatos em três fornos instalados no polo cerâmico de Santa Gertrudes (SP), e detém participação estimada de 14,0% no mercado nacional de revestimentos. O ágio da unidade decorre da aquisição da operação de porcelanatos.`,
+        15: 'A receita cresce 6,0% em 2027, com a ampliação do terceiro forno, e a taxa converge para 3,5% em 2031. Na perpetuidade, adotou-se crescimento nominal de 3,0%.',
+        19: 'O EBITDA passa de R$ 45.360 mil em 2027 para R$ 57.866 mil em 2031, e o fluxo de caixa livre alcança R$ 32.460 mil no último ano projetado.',
+        24: 'A taxa após impostos de 11,9% corresponde à taxa antes dos impostos de 15,8%, conforme exigido pelo pronunciamento, e combina custo de capital próprio de 13,0% e custo da dívida após impostos de 8,6% na estrutura de capital com 25,0% de dívida.',
+        30: 'O valor em uso da unidade é de R$ 314.112 mil e supera em R$ 27.712 mil o valor contábil de R$ 286.400 mil, que inclui o ágio alocado.',
+      },
+      secoes: {
+        descricao: { titulo: 'Descrição da empresa', paginas: '6 a 8', pagina: 7 },
+        premissas: { titulo: 'Premissas', paginas: '14 a 17', pagina: 15 },
+        projecoes: { titulo: 'Projeções', paginas: '18 a 21', pagina: 19 },
+        taxa: { titulo: 'Taxa de desconto', paginas: '23 a 25', pagina: 24 },
+      },
+    },
+    escopos: {
+      completo: {
+        rotulo: 'Metodologia, premissas, projeções e taxa de desconto',
+        apoio: 'Inclui a reperformance dos cálculos do avaliador no modelo GT.',
+        blocos: [
+          `Revisamos o laudo emitido pela ${AVALIADOR_2}, com data-base em {data.base}, que apurou o valor em uso de {valor.uso} para a unidade de revestimentos, cujo valor contábil, que inclui o ágio alocado, é de {valor.contabil}. A revisão compreendeu a metodologia, as premissas operacionais, as projeções financeiras e a taxa de desconto, e incluiu a reperformance dos cálculos do avaliador no modelo GT.`,
+          'O valor em uso supera o valor contábil em {folga}, de modo que o avaliador não identificou perda por redução ao valor recuperável na data-base.',
+        ],
+      },
+      limitado: {
+        rotulo: 'Metodologia e taxa de desconto',
+        apoio: 'Considera as projeções conforme apresentadas pela administração.',
+        blocos: [
+          `Revisamos o laudo emitido pela ${AVALIADOR_2}, com data-base em {data.base}, que apurou o valor em uso de {valor.uso} para a unidade de revestimentos, cujo valor contábil, que inclui o ágio alocado, é de {valor.contabil}. A revisão compreendeu a metodologia e a taxa de desconto, e as projeções financeiras foram consideradas conforme apresentadas pela administração.`,
+          'O valor em uso supera o valor contábil em {folga}, de modo que o avaliador não identificou perda por redução ao valor recuperável na data-base.',
+        ],
+      },
+    },
+    documentos: [
+      { texto: `Laudo de valor em uso emitido pela ${AVALIADOR_2}, com data-base em {data.base}`, fixo: true },
+      { texto: 'Modelo de avaliação do avaliador, em planilha', fixo: true },
+      { texto: 'Orçamento de 2027 aprovado pelo conselho de administração' },
+      { texto: 'Plano de negócios da unidade de revestimentos para o período de 2027 a 2031' },
+      { texto: 'Balancete da companhia em {data.base}' },
+    ],
+    secoes: [
+      {
+        id: 'objetivo', titulo: 'Objetivo', origem: 'regra', como: 'A seção sai do texto fixo da biblioteca de textos padrão.',
+        blocos: [`Este memorando registra a revisão, pela área de Strategy and Transactions da Grant Thornton, do teste de redução ao valor recuperável preparado pela administração da ${EMPRESA_2} para a unidade de revestimentos, à qual está alocado o ágio registrado na aquisição da operação de porcelanatos. O objetivo é apoiar a equipe de auditoria na avaliação da razoabilidade do valor recuperável dessa unidade.`],
+      },
+      { id: 'escopo', titulo: 'Escopo da revisão', origem: 'regra', como: 'A seção usa o texto padrão do escopo informado pelo analista, completado com a ficha do caso.', especial: 'escopo' },
+      { id: 'documentacao', titulo: 'Documentação recebida', origem: 'regra', como: 'A seção lista a documentação informada pelo analista.', especial: 'documentacao' },
+      {
+        id: 'normativo', titulo: 'Base normativa: CPC 01', origem: 'regra', como: 'A seção usa o texto normativo do CPC 01, da biblioteca de textos padrão.',
+        blocos: [
+          'O Pronunciamento Técnico CPC 01 – Redução ao Valor Recuperável de Ativos exige que a unidade geradora de caixa à qual foi alocado ágio seja testada ao menos uma vez por ano, e que a entidade reconheça perda sempre que o valor contábil da unidade exceder o seu valor recuperável, que corresponde ao maior entre o valor justo líquido de despesas de alienação e o valor em uso.',
+          'No cálculo do valor em uso, o pronunciamento determina que os fluxos de caixa se baseiem nos orçamentos mais recentes aprovados pela administração, que as projeções cubram no máximo cinco anos, salvo justificativa, e que a taxa de desconto seja apurada antes dos impostos.',
+        ],
+      },
+      {
+        id: 'descricao', titulo: 'Descrição da empresa', origem: 'modelo', fonte: 'descricao',
+        blocos: [
+          `A ${EMPRESA_2} produz revestimentos cerâmicos e porcelanatos em três fornos instalados no polo cerâmico de Santa Gertrudes (SP), com participação de 14,0% no mercado nacional de revestimentos, segundo a estimativa do laudo.`,
+          'A receita líquida estimada para 2026 é de R$ 241.000 mil, e o ágio da unidade decorre da aquisição da operação de porcelanatos.',
+        ],
+      },
+      {
+        id: 'premissas', titulo: 'Premissas da avaliação', origem: 'modelo', fonte: 'premissas',
+        blocos: [
+          'O avaliador projetou crescimento da receita de {crescimento.2027} em 2027, sustentado pela ampliação do terceiro forno, com redução gradual da taxa até {crescimento.2031} em 2031, e adotou crescimento nominal de {perpetuidade} na perpetuidade.',
+          'Os custos dos produtos vendidos, de {custos.2027} em 2027, acompanham o preço do gás natural e das argilas, e a margem EBITDA projetada passa de {margem.2027} para {margem.2031}, abaixo da margem que a principal concorrente, Revestimentos Cajá Ltda., apresenta no mercado.',
+        ],
+      },
+      {
+        id: 'pfi', titulo: 'Projeções financeiras (PFI)', origem: 'modelo', fonte: 'projecoes',
+        blocos: [
+          'A receita líquida passa de {receita.2027} em 2027 para {receita.2031} em 2031, e o EBITDA cresce de {ebitda.2027} para {ebitda.2031} no mesmo período.',
+          'O fluxo de caixa livre parte de {fcl.2027} em 2027 e alcança {fcl.2031} em 2031, depois do CAPEX de {capex.2031} e da variação do capital de giro de {cg.2031} no último ano projetado.',
+        ],
+      },
+      {
+        id: 'tabela', titulo: 'Tabela de projeções', origem: 'regra', como: 'A tabela é preenchida com os valores do modelo GT.',
+        blocos: ['A tabela a seguir reproduz as projeções do modelo GT, em R$ mil, para os cinco anos do período projetivo.'], tabela: true,
+      },
+      {
+        id: 'taxa', titulo: 'Taxa de desconto', origem: 'modelo', fonte: 'taxa',
+        blocos: [
+          'O avaliador descontou os fluxos de caixa pela taxa após impostos de {wacc}, que corresponde à taxa antes dos impostos de {taxa.antes}, conforme o pronunciamento exige para o valor em uso.',
+          'A taxa combina o custo de capital próprio de {ke} com o custo da dívida após impostos de {kd}, ponderados pela estrutura de capital com {estrutura.divida} de dívida.',
+        ],
+      },
+      { id: 'conclusao', titulo: 'Conclusão', origem: 'analista', como: 'A seção fica reservada ao analista.' },
+    ],
+    // O ponto em que a analista anterior parou: um valor corrigido no texto, uma marcação revisada e uma pendente
+    estadoInicial: {
+      entradas: { modo: 'pasta', cpc: '01', escopo: 'completo', documentos: [true, true, true, true, true] },
+      entradasGeradas: { modo: 'pasta', cpc: '01', escopo: 'completo', documentos: [true, true, true, true, true] },
+      gerado: true,
+      versao: 1,
+      dataGeracao: '17/11/2026',
+      analista: ANALISTA_ANTERIOR,
+      retomadoDe: null,
+      edicoes: {
+        'descricao-1': 'A receita líquida estimada para 2026 é de R$ 214.000 mil, e o ágio da unidade decorre da aquisição da operação de porcelanatos.',
+      },
+      revisadas: {
+        'descricao-0:valor:14,0%': { quem: ANALISTA_ANTERIOR, quando: '17/11/2026', nota: 'A analista conferiu o valor com o laudo, página 7.' },
+      },
+      ultimaSecao: 'premissas',
+      baixadoEm: null,
+      registro: [
+        { quando: '17/11/2026', texto: `Rascunho 1 gerado por ${ANALISTA_ANTERIOR}.` },
+        { quando: '17/11/2026', texto: `${ANALISTA_ANTERIOR} corrigiu a receita de 2026 na seção 5, e o trecho passou na conferência.` },
+        { quando: '17/11/2026', texto: `${ANALISTA_ANTERIOR} revisou a participação de mercado na seção 5, que conferiu com o laudo, página 7.` },
+        { quando: '17/11/2026', texto: `${ANALISTA_ANTERIOR} parou na seção 6, Premissas da avaliação.` },
+      ],
+    },
+  };
+
+  // Casos que só aparecem na lista do histórico
+  const SO_NO_HISTORICO = [
+    { id: 'capim', empresa: 'Laticínios Capim-Dourado S.A.', cliente: 'Laticínios Capim-Dourado S.A.', cpc: '15', analista: 'Tiago Arantes', situacao: 'Concluído', detalhe: 'O memorando foi baixado em Word em 11/11/2026', atualizacao: '11/11/2026' },
+    { id: 'aroeira', empresa: 'Transportadora Aroeira Branca Ltda.', cliente: FUNDO, cpc: '46', analista: 'Marina Teles', situacao: 'Concluído', detalhe: 'O memorando foi baixado em Word em 06/11/2026', atualizacao: '06/11/2026' },
+    { id: 'manso', empresa: 'Frigorífico Ribeirão Manso S.A.', cliente: 'Frigorífico Ribeirão Manso S.A.', cpc: '15', analista: 'Marina Teles', situacao: 'Aguardando insumos', detalhe: 'O modelo GT ainda não foi enviado', atualizacao: '16/11/2026' },
+  ];
+
+  window.RM_CASOS = {
+    HOJE, ANALISTA_CONECTADO, CPCS, LINHAS_DE_PROJECAO,
+    navegaveis: { [PRINCIPAL.id]: PRINCIPAL, [RETOMADO.id]: RETOMADO },
+    ordemDoHistorico: [PRINCIPAL.id, RETOMADO.id, ...SO_NO_HISTORICO.map((c) => c.id)],
+    soNoHistorico: Object.fromEntries(SO_NO_HISTORICO.map((c) => [c.id, c])),
+  };
+})();
+
+</script>
+<script>
+/* memorando.js — monta o rascunho de um caso e faz a conferência determinística.
+ *
+ * O rascunho sai de três coisas: o texto de cada seção (casos.js), a ficha do caso e o estado da revisão
+ * (trechos editados e marcações revisadas). A conferência não usa modelo de linguagem. Ela acha no texto
+ * cada valor (R$ mil, percentual, número decimal, data e ano) e cada nome próprio, compara o valor com a
+ * ficha do caso e o nome com os nomes que aparecem nos insumos, e marca para revisão o que não achar.
+ *
+ * Saída: window.RM_MEMORANDO
+ */
+(function () {
+  'use strict';
+
+  // ---------------------------------------------------------------------------------------------
+  // Formatação pt-BR, feita à mão para não depender do locale do navegador
+  // ---------------------------------------------------------------------------------------------
+  function milhar(inteiro) {
+    return String(Math.round(inteiro)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  function decimal(numero, casas) {
+    const [inteira, fracao] = numero.toFixed(casas).split('.');
+    return milhar(Number(inteira)) + (fracao ? ',' + fracao : '');
+  }
+
+  /** Como o valor aparece no texto e na ficha. */
+  const NO_TEXTO = {
+    mil: (v) => `R$ ${milhar(v)} mil`,
+    pct: (v) => `${decimal(v, 1)}%`,
+    num: (v) => decimal(v, 2),
+    data: (v) => v,
+  };
+
+  /** Como o valor aparece na tabela e na grade da planilha, onde o cabeçalho já diz "R$ mil". */
+  const NA_TABELA = { ...NO_TEXTO, mil: (v) => milhar(v) };
+
+  const formatar = (campo) => NO_TEXTO[campo.unidade](campo.valor);
+  const formatarNaTabela = (campo) => NA_TABELA[campo.unidade](campo.valor);
+
+  // ---------------------------------------------------------------------------------------------
+  // Ficha do caso
+  // ---------------------------------------------------------------------------------------------
+  const cacheDeCampos = new WeakMap();
+
+  /** Os campos do caso por id. */
+  function camposPorId(caso) {
+    if (!cacheDeCampos.has(caso)) cacheDeCampos.set(caso, new Map(caso.campos.map((c) => [c.id, c])));
+    return cacheDeCampos.get(caso);
+  }
+
+  const campo = (caso, id) => camposPorId(caso).get(id);
+
+  /** Chave que junta um valor do texto com o campo da ficha que tem o mesmo valor: "pct:8.5", "mil:412300". */
+  const chaveDoCampo = (c) => `${c.unidade}:${c.valor}`;
+
+  function chaveDoValorCitado(tipo, texto) {
+    if (tipo === 'data' || tipo === 'ano') return `${tipo}:${texto}`;
+    const numero = Number(texto.replace(/R\$|mil|%|\s/g, '').replace(/\./g, '').replace(',', '.'));
+    return `${tipo === 'milhar' ? 'mil' : tipo}:${numero}`;
+  }
+
+  /** Para cada chave de valor, os ids dos campos da ficha que têm aquele valor. */
+  function indiceDaFicha(caso) {
+    const indice = new Map();
+    caso.campos.forEach((c) => {
+      const chave = chaveDoCampo(c);
+      indice.set(chave, [...(indice.get(chave) || []), c.id]);
+    });
+    return indice;
+  }
+
+  /** Troca cada {id} do texto pelo valor formatado do campo. Campo que não existe aparece como {?id}. */
+  function resolver(texto, caso) {
+    return texto.replace(/\{([\w.]+)\}/g, (_, id) => {
+      const c = campo(caso, id);
+      if (!c) {
+        console.error(`campo ${id} não existe na ficha do caso ${caso.id}`);
+        return `{?${id}}`;
+      }
+      return formatar(c);
+    });
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Conferência: valores
+  // ---------------------------------------------------------------------------------------------
+  // A ordem das alternativas importa: "R$ 412.300 mil" tem de virar um valor só, e não um milhar solto
+  const VALOR_CITADO = new RegExp([
+    '(?<data>\\b\\d{2}/\\d{2}/\\d{4}\\b)',
+    '(?<mil>R\\$\\s?\\d{1,3}(?:\\.\\d{3})*(?:,\\d+)?\\s?mil\\b)',
+    '(?<pct>\\b\\d{1,3}(?:,\\d+)?\\s?%)',
+    '(?<milhar>\\b\\d{1,3}(?:\\.\\d{3})+\\b)',
+    '(?<num>\\b\\d+,\\d+\\b)',
+    '(?<ano>\\b(?:19|20)\\d{2}\\b)',
+  ].join('|'), 'g');
+
+  function valoresCitados(texto) {
+    return Array.from(texto.matchAll(VALOR_CITADO), (achado) => {
+      const tipo = Object.keys(achado.groups).find((nome) => achado.groups[nome] !== undefined);
+      return { tipo, texto: achado[0], inicio: achado.index, fim: achado.index + achado[0].length, chave: chaveDoValorCitado(tipo, achado[0]) };
+    });
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Conferência: nomes próprios
+  // ---------------------------------------------------------------------------------------------
+  // Um nome é uma sequência de duas ou mais palavras com inicial maiúscula, que pode ter conectores no meio
+  // ("Pedra Lisa Avaliações Ltda.", "Strategy and Transactions"). O artigo do começo da frase não conta.
+  const CONECTORES = new Set(['de', 'da', 'do', 'das', 'dos', 'e', 'and']);
+  const INICIOS_DE_FRASE = new Set(['A', 'O', 'As', 'Os', 'Ao', 'Aos', 'À', 'Às', 'Em', 'No', 'Na', 'Nos', 'Nas', 'Para',
+    'Pela', 'Pelo', 'Segundo', 'Com', 'Entre', 'Este', 'Esta', 'Esse', 'Essa', 'Sua', 'Seu', 'De', 'Da', 'Do', 'Um', 'Uma']);
+  const PALAVRA_COM_MAIUSCULA = /^\p{Lu}[\p{L}\p{N}.\-]*$/u;
+  const ABREVIATURA = /^(?:(?:\p{Lu}\.)+|Ltda\.)$/u;
+
+  /** Termos que vêm da biblioteca de textos padrão e por isso podem aparecer em qualquer caso. */
+  const TERMOS_DA_BIBLIOTECA = ['Grant Thornton', 'Strategy and Transactions', 'Pronunciamento Técnico CPC',
+    'Mensuração do Valor Justo', 'Redução ao Valor Recuperável de Ativos', 'Combinação de Negócios',
+    'Comitê de Pronunciamentos Contábeis'];
+
+  function nomesCitados(texto) {
+    const achados = [];
+    let palavras = [];
+
+    function fecharNome() {
+      while (palavras.length && CONECTORES.has(palavras[palavras.length - 1].texto)) palavras.pop();
+      while (palavras.length && INICIOS_DE_FRASE.has(palavras[0].texto)) palavras.shift();
+      if (palavras.length >= 2) {
+        achados.push({ nome: palavras.map((p) => p.texto).join(' '), inicio: palavras[0].inicio, fim: palavras[palavras.length - 1].fim });
+      }
+      palavras = [];
+    }
+
+    for (const achado of texto.matchAll(/\S+/g)) {
+      const bruta = achado[0];
+      const recuo = bruta.match(/^[("“«']*/)[0].length;
+      let limpa = bruta.slice(recuo).replace(/[)"”»',;:!?]+$/, '');
+      if (limpa.endsWith('.') && !ABREVIATURA.test(limpa)) limpa = limpa.slice(0, -1);
+      const inicio = achado.index + recuo;
+      const palavra = { texto: limpa, inicio, fim: inicio + limpa.length };
+
+      if (PALAVRA_COM_MAIUSCULA.test(limpa)) palavras.push(palavra);
+      else if (CONECTORES.has(limpa) && palavras.length) palavras.push(palavra);
+      else fecharNome();
+      // Pontuação no fim da palavra encerra o nome: "S.A., responde" não emenda com o que vem depois
+      if (/[.,;:!?)]$/.test(bruta)) fecharNome();
+    }
+    fecharNome();
+    return achados;
+  }
+
+  /**
+   * O nome passa se estiver contido num nome dos insumos, ou se for só a junção de nomes dos insumos com
+   * conectores ("Strategy and Transactions da Grant Thornton").
+   */
+  function nomePermitido(nome, permitidos) {
+    if (permitidos.some((p) => p.includes(nome))) return true;
+    let resto = nome;
+    [...permitidos].sort((a, b) => b.length - a.length).forEach((p) => { resto = resto.split(p).join(' '); });
+    return resto.split(/\s+/).filter(Boolean).every((palavra) => CONECTORES.has(palavra));
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // O que os insumos do caso contêm
+  // ---------------------------------------------------------------------------------------------
+  function documentosRecebidos(caso, entradas) {
+    return caso.documentos.filter((_, i) => entradas.documentos[i]).map((d) => resolver(d.texto, caso));
+  }
+
+  /** Textos que o analista informou ou que vieram do laudo: é deles que saem os nomes e os anos permitidos. */
+  function textosDosInsumos(caso, entradas) {
+    return [...Object.values(caso.laudo.paginas), ...documentosRecebidos(caso, entradas)];
+  }
+
+  function nomesDosInsumos(caso, entradas) {
+    const nomes = textosDosInsumos(caso, entradas).flatMap((t) => nomesCitados(t).map((a) => a.nome));
+    return [...new Set([...nomes, ...TERMOS_DA_BIBLIOTECA])];
+  }
+
+  function anosDosInsumos(caso, entradas) {
+    const anos = textosDosInsumos(caso, entradas).flatMap((t) => t.match(/\b(?:19|20)\d{2}\b/g) || []);
+    return new Set([...anos, ...caso.anos.map(String), String(caso.anoBase)]);
+  }
+
+  function contextoDaConferencia(caso, entradas) {
+    return { indice: indiceDaFicha(caso), nomes: nomesDosInsumos(caso, entradas), anos: anosDosInsumos(caso, entradas) };
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Conferência de um trecho
+  // ---------------------------------------------------------------------------------------------
+  /**
+   * Divide o texto em segmentos: texto comum, valor do caso (com os campos da ficha que têm aquele valor) e
+   * marcação de revisão (valor ausente da ficha ou nome ausente dos insumos). Devolve também a contagem do
+   * que foi conferido.
+   */
+  function conferirTrecho(texto, contexto, idDoBloco) {
+    const trechos = [];
+    const valores = valoresCitados(texto);
+    valores.forEach((v) => {
+      if (v.tipo === 'ano') {
+        if (!contexto.anos.has(v.texto)) trechos.push({ ...v, tipo: 'marca', motivo: 'valor' });
+        return;
+      }
+      const campos = contexto.indice.get(v.chave);
+      trechos.push(campos ? { ...v, tipo: 'valor', campos } : { ...v, tipo: 'marca', motivo: 'valor' });
+    });
+    const nomes = nomesCitados(texto);
+    nomes.forEach((n) => {
+      if (!nomePermitido(n.nome, contexto.nomes)) trechos.push({ inicio: n.inicio, fim: n.fim, texto: texto.slice(n.inicio, n.fim), tipo: 'marca', motivo: 'nome' });
+    });
+
+    trechos.sort((a, b) => a.inicio - b.inicio);
+    const segmentos = [];
+    let posicao = 0;
+    trechos.forEach((t) => {
+      if (t.inicio < posicao) return; // sobreposto ao trecho anterior
+      if (t.inicio > posicao) segmentos.push({ tipo: 'texto', texto: texto.slice(posicao, t.inicio) });
+      const segmento = { tipo: t.tipo, texto: t.texto };
+      if (t.tipo === 'valor') segmento.campos = t.campos;
+      if (t.tipo === 'marca') Object.assign(segmento, { motivo: t.motivo, id: `${idDoBloco}:${t.motivo}:${t.texto}` });
+      segmentos.push(segmento);
+      posicao = t.fim;
+    });
+    if (posicao < texto.length) segmentos.push({ tipo: 'texto', texto: texto.slice(posicao) });
+    return { segmentos, valores: valores.length, nomes: nomes.length };
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Montagem do rascunho
+  // ---------------------------------------------------------------------------------------------
+  /** Os textos de uma seção antes da conferência: parágrafos e, quando houver, a lista e a tabela. */
+  function blocosDaSecao(caso, secao, entradas) {
+    if (secao.especial === 'escopo') return caso.escopos[entradas.escopo].blocos.map((texto) => ({ tipo: 'p', texto }));
+    if (secao.especial === 'documentacao') {
+      return [
+        { tipo: 'p', texto: 'Para a revisão, recebemos a documentação relacionada a seguir.' },
+        { tipo: 'lista', itens: caso.documentos.filter((_, i) => entradas.documentos[i]).map((d) => d.texto) },
+      ];
+    }
+    const blocos = (secao.blocos || []).map((texto) => ({ tipo: 'p', texto }));
+    if (secao.tabela) blocos.push({ tipo: 'tabela' });
+    return blocos;
+  }
+
+  function linhasDaTabela(caso) {
+    return caso.linhasDaTabela.map((linha) => ({
+      rotulo: linha.rotulo,
+      celulas: caso.anos.map((ano) => {
+        const c = campo(caso, `${linha.chave}.${ano}`);
+        return { campo: c.id, texto: formatarNaTabela(c) };
+      }),
+    }));
+  }
+
+  /**
+   * O rascunho de um caso no estado atual da revisão: seções numeradas com os segmentos conferidos, a lista
+   * de marcações (com a revisão de cada uma) e o total de valores e nomes conferidos.
+   */
+  function montarRascunho(caso, estadoDoCaso) {
+    const entradas = estadoDoCaso.entradasGeradas || estadoDoCaso.entradas;
+    const contexto = contextoDaConferencia(caso, entradas);
+    const conferidos = { valores: 0, nomes: 0 };
+    const marcacoes = [];
+
+    function conferir(texto, idDoBloco, secao, numero) {
+      const resultado = conferirTrecho(resolver(texto, caso), contexto, idDoBloco);
+      conferidos.valores += resultado.valores;
+      conferidos.nomes += resultado.nomes;
+      resultado.segmentos.filter((s) => s.tipo === 'marca').forEach((s) => {
+        marcacoes.push({ id: s.id, secao: secao.id, numero, titulo: secao.titulo, bloco: idDoBloco, motivo: s.motivo,
+          texto: s.texto, origemDaSecao: secao.origem, revisada: estadoDoCaso.revisadas[s.id] || null });
+      });
+      return resultado.segmentos;
+    }
+
+    const secoes = caso.secoes.map((secao, i) => {
+      const numero = i + 1;
+      const blocos = blocosDaSecao(caso, secao, entradas).map((bloco, j) => {
+        const id = `${secao.id}-${j}`;
+        if (bloco.tipo === 'p') {
+          const editado = Object.prototype.hasOwnProperty.call(estadoDoCaso.edicoes, id);
+          const texto = editado ? estadoDoCaso.edicoes[id] : resolver(bloco.texto, caso);
+          return { tipo: 'p', id, texto, editado, segmentos: conferir(texto, id, secao, numero) };
+        }
+        if (bloco.tipo === 'lista') {
+          return { tipo: 'lista', id, itens: bloco.itens.map((texto, k) => ({ segmentos: conferir(texto, `${id}-${k}`, secao, numero) })) };
+        }
+        return { tipo: 'tabela', id, anos: caso.anos, linhas: linhasDaTabela(caso) };
+      });
+      return { ...secao, numero, blocos, fonteDoLaudo: secao.fonte ? caso.laudo.secoes[secao.fonte] : null };
+    });
+
+    return { secoes, marcacoes, conferidos };
+  }
+
+  const pendentes = (rascunho) => rascunho.marcacoes.filter((m) => !m.revisada);
+
+  /** Os passos que a tela de geração mostra, na ordem em que o agente os executa. */
+  function passosDaGeracao(caso, estadoDoCaso) {
+    const rascunho = montarRascunho(caso, estadoDoCaso);
+    const contar = (arquivo) => caso.campos.filter((c) => c.origem.arquivo === arquivo).length;
+    const marcas = rascunho.marcacoes.length;
+    return [
+      { id: 'leitura-gt', grupo: 'leitura', titulo: 'Modelo GT', origem: 'regra', etiqueta: 'Lido por regra',
+        detalhe: `A leitura extraiu ${contar('gt')} valores do modelo GT, cada um com a aba e a célula de origem.` },
+      { id: 'leitura-avaliador', grupo: 'leitura', titulo: 'Modelo do avaliador', origem: 'regra', etiqueta: 'Lido por regra',
+        detalhe: `A leitura extraiu ${contar('avaliador')} valores para as seções que descrevem o trabalho do avaliador.` },
+      { id: 'leitura-laudo', grupo: 'leitura', titulo: 'Laudo de avaliação', origem: 'modelo', etiqueta: 'Seções localizadas pelo modelo de linguagem',
+        detalhe: `O modelo de linguagem localizou as seções de descrição da empresa, premissas, projeções e taxa de desconto, e a leitura registrou o trecho e a página de cada uma, além de ${contar('laudo')} valores do laudo.` },
+      { id: 'ficha', grupo: 'leitura', titulo: 'Ficha do caso', origem: 'regra', etiqueta: 'Consolidada por regra',
+        detalhe: `A ficha reúne ${caso.campos.length} campos, e cada um indica o arquivo e a página ou a célula de origem.` },
+      ...rascunho.secoes.map((s) => ({ id: `secao-${s.id}`, grupo: 'secao', titulo: `${s.numero}. ${s.titulo}`, origem: s.origem, secao: s })),
+      { id: 'conferencia', grupo: 'conferencia', titulo: 'Conferência de valores e nomes', origem: 'regra', etiqueta: 'Por regra',
+        detalhe: `A conferência comparou ${rascunho.conferidos.valores} valores com a ficha do caso e ${rascunho.conferidos.nomes} nomes com os insumos. `
+          + (marcas === 1 ? 'Um trecho ficou marcado para revisão.' : `${marcas} trechos ficaram marcados para revisão.`) },
+    ];
+  }
+
+  window.RM_MEMORANDO = {
+    formatar, formatarNaTabela, campo, camposPorId, indiceDaFicha, resolver, valoresCitados, nomesCitados, nomePermitido,
+    nomesDosInsumos, anosDosInsumos, documentosRecebidos, contextoDaConferencia, conferirTrecho, montarRascunho, pendentes,
+    passosDaGeracao, TERMOS_DA_BIBLIOTECA,
+  };
+})();
+
+</script>
+<script>
+/* word.js — gera o rascunho em Word e faz o download.
+ *
+ * O arquivo é HTML com o tipo application/msword e a extensão .doc, que o Word abre como documento. Ele
+ * sai do mesmo rascunho que a tela mostra (RM_MEMORANDO.montarRascunho): as seções, a tabela de projeções e
+ * as marcações ainda pendentes, destacadas em amarelo com o motivo entre colchetes. A conclusão vai em
+ * branco, porque é do analista.
+ *
+ * Saída: window.RM_WORD
+ */
+(function () {
+  'use strict';
+
+  const M = window.RM_MEMORANDO;
+  const C = window.RM_CASOS;
+  const TIPO = 'application/msword';
+
+  const MOTIVOS = {
+    valor: 'valor ausente da ficha do caso',
+    nome: 'nome ausente dos insumos do caso',
+  };
+
+  function esc(texto) {
+    return String(texto).replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+  }
+
+  /** Texto do trecho para o Word: valor do caso sai como texto comum; marcação pendente sai destacada. */
+  function trechoEmWord(segmentos, revisadas) {
+    return segmentos.map((s) => {
+      if (s.tipo !== 'marca' || revisadas[s.id]) return esc(s.texto);
+      return `<span style="background:#FFF2CC;mso-highlight:yellow">${esc(s.texto)}</span>`
+        + ` <span style="color:#8F4400">[Revisar: ${MOTIVOS[s.motivo]}]</span>`;
+    }).join('');
+  }
+
+  function tabelaEmWord(bloco) {
+    const cabecalho = `<tr><th style="text-align:left">R$ mil</th>${bloco.anos.map((a) => `<th>${a}</th>`).join('')}</tr>`;
+    const linhas = bloco.linhas.map((l) => `<tr><td>${esc(l.rotulo)}</td>${l.celulas.map((c) => `<td style="text-align:right">${esc(c.texto)}</td>`).join('')}</tr>`);
+    return `<table class="projecoes">${cabecalho}${linhas.join('')}</table>`;
+  }
+
+  function secaoEmWord(secao, revisadas) {
+    const titulo = `<h2>${secao.numero}. ${esc(secao.titulo)}</h2>`;
+    if (secao.origem === 'analista') return `${titulo}<p class="conclusao">&nbsp;</p><p class="conclusao">&nbsp;</p><p class="conclusao">&nbsp;</p>`;
+    const corpo = secao.blocos.map((bloco) => {
+      if (bloco.tipo === 'p') return `<p>${trechoEmWord(bloco.segmentos, revisadas)}</p>`;
+      if (bloco.tipo === 'lista') return `<ul>${bloco.itens.map((item) => `<li>${trechoEmWord(item.segmentos, revisadas)}</li>`).join('')}</ul>`;
+      return tabelaEmWord(bloco);
+    });
+    return titulo + corpo.join('');
+  }
+
+  function nomeDoArquivo(caso, estadoDoCaso) {
+    const empresa = caso.empresa.replace(/\s+(S\.A\.|Ltda\.)$/, '');
+    return `Memorando - ${empresa} - CPC ${caso.cpc} - rascunho ${estadoDoCaso.versao}.doc`;
+  }
+
+  /** O arquivo inteiro, sem baixar: { nome, tipo, conteudo }. O teste do autor lê daqui. */
+  function gerarArquivo(caso, estadoDoCaso) {
+    const rascunho = M.montarRascunho(caso, estadoDoCaso);
+    const dataBase = M.formatar(M.campo(caso, 'data.base'));
+    const identificacao = [
+      ['Cliente da auditoria', caso.cliente],
+      ['Empresa avaliada', caso.empresa],
+      ['Avaliador', caso.avaliador],
+      ['Data-base', dataBase],
+      ['CPC aplicável', `CPC ${caso.cpc} – ${C.CPCS[caso.cpc]}`],
+      ['Preparado por', `${estadoDoCaso.analista}, a partir do rascunho gerado pelo agente`],
+    ].map(([rotulo, valor]) => `<tr><td class="rotulo">${esc(rotulo)}</td><td>${esc(valor)}</td></tr>`).join('');
+
+    const conteudo = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">'
+      + `<head><meta charset="utf-8"><title>Memorando de suporte à auditoria – ${esc(caso.empresa)}</title>`
+      + '<style>'
+      + '@page { size: 21cm 29.7cm; margin: 2.5cm 2.5cm 2.5cm 2.5cm; }'
+      + 'body { font-family: Arial, sans-serif; font-size: 10.5pt; line-height: 1.45; color: #231F20; }'
+      + 'h1 { font-size: 16pt; font-weight: normal; color: #4F2D7F; margin: 0 0 4pt; }'
+      + 'h2 { font-size: 12pt; font-weight: normal; color: #4F2D7F; margin: 16pt 0 6pt; }'
+      + '.marca { font-size: 9pt; color: #666666; margin: 0 0 12pt; }'
+      + 'table { border-collapse: collapse; width: 100%; margin: 6pt 0 10pt; }'
+      + 'td, th { border: 1px solid #CCC4BD; padding: 3pt 6pt; font-size: 9.5pt; font-weight: normal; }'
+      + 'th { background: #F2F1EF; }'
+      + 'td.rotulo { width: 32%; color: #4A4446; }'
+      + 'p.conclusao { border-bottom: 1px solid #CCC4BD; }'
+      + '</style></head><body>'
+      + '<p class="marca">Grant Thornton · Strategy and Transactions</p>'
+      + '<h1>Memorando de suporte à auditoria</h1>'
+      + `<p class="marca">Rascunho ${estadoDoCaso.versao} · ${esc(caso.objeto)}</p>`
+      + `<table>${identificacao}</table>`
+      + rascunho.secoes.map((s) => secaoEmWord(s, estadoDoCaso.revisadas)).join('')
+      + '</body></html>';
+
+    return { nome: nomeDoArquivo(caso, estadoDoCaso), tipo: TIPO, conteudo };
+  }
+
+  /** Baixa o arquivo pelo navegador. O BOM no começo faz o Word ler o texto como UTF-8. */
+  function baixar(caso, estadoDoCaso) {
+    const arquivo = gerarArquivo(caso, estadoDoCaso);
+    const blob = new Blob(['﻿', arquivo.conteudo], { type: arquivo.tipo });
+    const endereco = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = endereco;
+    link.download = arquivo.nome;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(endereco), 2000);
+    return arquivo;
+  }
+
+  window.RM_WORD = { gerarArquivo, baixar, TIPO };
+})();
+
+</script>
+<script>
+/* nucleo.js — estado, peças de interface, cabeçalho, abas, eventos e a geração passo a passo.
+ *
+ * Cada tela mora num arquivo tela-*.js e se registra com RM.registrarTela(id, desenhar). O núcleo desenha o
+ * cabeçalho, as abas e a tela atual a partir de `estado`, e redesenha a cada mudança.
+ *
+ * Os controles não ligam evento um a um: todo elemento com data-acao é tratado por um único ouvinte no
+ * documento, que procura a ação em ACOES. Exemplo: data-acao="origem" data-campos="receita.2027" mostra a
+ * origem daquele valor no painel do rascunho.
+ *
+ * Saída: window.RM, usado pelas telas e pelo teste do autor.
+ */
+(function () {
+  'use strict';
+
+  const C = window.RM_CASOS;
+  const M = window.RM_MEMORANDO;
+
+  const TELAS = [
+    { id: 'novo', rotulo: 'Novo memorando' },
+    { id: 'geracao', rotulo: 'Geração' },
+    { id: 'rascunho', rotulo: 'Rascunho' },
+    { id: 'historico', rotulo: 'Histórico dos casos' },
+  ];
+
+  const MODELOS = {
+    aberto: {
+      nome: 'Modelo aberto no servidor da Grant Thornton', curto: 'Modelo aberto no servidor',
+      onde: 'Os trechos do laudo são processados no próprio servidor da Grant Thornton, e nenhum dado sai da empresa.',
+    },
+    copilot: {
+      nome: 'Microsoft 365 Copilot', curto: 'Microsoft 365 Copilot',
+      onde: 'Os trechos enviados ao modelo são processados pela Microsoft, e cada analista que aciona a solução precisa da licença do Microsoft 365 Copilot.',
+    },
+  };
+
+  const ORIGENS = {
+    regra: 'Por regra',
+    modelo: 'Redigida pelo modelo de linguagem',
+    analista: 'Reservada ao analista',
+  };
+
+  // Ritmo da animação da geração. A tela não mostra tempo: o tempo real depende do modelo e do servidor
+  const PAUSA_ENTRE_PASSOS_MS = 420;
+
+  const clonar = (objeto) => JSON.parse(JSON.stringify(objeto));
+
+  function estadoInicial() {
+    return {
+      tela: 'novo',
+      analista: C.ANALISTA_CONECTADO,
+      modelo: 'aberto',
+      menuDoModelo: false,
+      casoAtivo: 'saguarai',
+      // anteriores: os rascunhos que uma geração nova substituiu, guardados para consulta só de leitura
+      casos: Object.fromEntries(Object.values(C.navegaveis).map((c) => [c.id, { anteriores: [], ...clonar(c.estadoInicial) }])),
+      geracao: { caso: 'saguarai', passo: -1, total: 0 },
+      painel: { aba: 'revisao', origem: null, marca: null },
+      edicao: null,          // id do bloco aberto para edição
+      textoEmEdicao: null,   // o que o analista já digitou nele, para que nenhum redesenho o descarte
+      versaoAberta: null,    // número de um rascunho anterior aberto para leitura; null é o rascunho atual
+      destaque: null,
+    };
+  }
+
+  const estado = estadoInicial();
+
+  const desenhos = {};
+  function registrarTela(id, desenhar) {
+    desenhos[id] = desenhar;
+  }
+
+  const dadosDoCaso = (id) => C.navegaveis[id];
+  const estadoDoCaso = (id) => estado.casos[id];
+  const rascunhoDoCaso = (id) => M.montarRascunho(dadosDoCaso(id), estadoDoCaso(id));
+
+  /** O rascunho que a tela mostra: o atual, ou o anterior que o analista abriu para leitura. */
+  function versaoEmTela(id) {
+    const caso = estadoDoCaso(id);
+    return caso.anteriores.find((v) => v.versao === estado.versaoAberta) || caso;
+  }
+  const somenteLeitura = (id) => versaoEmTela(id) !== estadoDoCaso(id);
+  const movimentoReduzido = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const telaLarga = () => window.innerWidth > 980; // mesmo corte do @media de estilo.css que empilha o rascunho
+
+  // ---------------------------------------------------------------------------------------------
+  // Peças de interface (devolvem HTML)
+  // ---------------------------------------------------------------------------------------------
+  function esc(texto) {
+    return String(texto).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  }
+
+  function cabecalho(titulo, subtitulo, acoes) {
+    return `<section class="cabecalho"><div><h1>${titulo}</h1><p class="sub">${subtitulo}</p></div>`
+      + `${acoes ? `<div class="cabecalho-acoes">${acoes}</div>` : ''}</section>`;
+  }
+
+  /** Etiqueta com a amostra da origem: hachura lilás, teal liso ou quadro tracejado do analista. */
+  function etiquetaDeOrigem(origem, texto) {
+    return `<span class="origem origem-${origem}" data-origem="${origem}"><span class="amostra amostra-${origem}" aria-hidden="true"></span>${texto || ORIGENS[origem]}</span>`;
+  }
+
+  /**
+   * Um trecho conferido em HTML. O valor do caso vira link para a origem, e a marcação de revisão vira
+   * destaque âmbar com «!», ou com «✓» quando revisada. Com interativo = false, o desenho é o mesmo, sem
+   * clique. São <span role="button"> para que o texto quebre linha dentro do parágrafo.
+   */
+  function trechoEmHtml(segmentos, { revisadas = {}, interativo = true, camposAtivos = [], marcaAtiva = null } = {}) {
+    const clique = (acao, dados) => (interativo ? ` role="button" tabindex="0" data-acao="${acao}" ${dados}` : '');
+    return segmentos.map((s) => {
+      const texto = esc(s.texto);
+      if (s.tipo === 'texto') return texto;
+      if (s.tipo === 'valor') {
+        const ativo = s.campos.some((id) => camposAtivos.includes(id)) ? ' valor-ativo' : '';
+        return `<span class="valor${ativo}"${clique('origem', `data-campos="${s.campos.join(',')}"`)}>${texto}</span>`;
+      }
+      const revisada = Boolean(revisadas[s.id]);
+      const classes = `marca marca-${s.motivo}${revisada ? ' marca-revisada' : ''}${s.id === marcaAtiva ? ' marca-ativa' : ''}`;
+      return `<span class="${classes}" data-marca-id="${esc(s.id)}"${clique('marca', `data-marca="${esc(s.id)}"`)}>`
+        + `<span class="marca-sinal" aria-hidden="true">${revisada ? '✓' : '!'}</span>${texto}</span>`;
+    }).join('');
+  }
+
+  function situacaoDoCaso(id) {
+    const caso = estadoDoCaso(id);
+    if (estado.geracao.caso === id && estado.geracao.passo >= 0 && !caso.gerado) {
+      return { rotulo: 'Em geração', classe: 'neutro', detalhe: 'O agente está preenchendo as seções do rascunho.' };
+    }
+    if (!caso.gerado) return { rotulo: 'Rascunho não gerado', classe: 'neutro', detalhe: 'Os insumos estão na pasta do caso.' };
+    const rascunho = rascunhoDoCaso(id);
+    const total = rascunho.marcacoes.length;
+    const revisadas = total - M.pendentes(rascunho).length;
+    const corrigidos = Object.keys(caso.edicoes).length;
+    const correcao = corrigidos ? `, e ${corrigidos === 1 ? '1 trecho foi corrigido' : `${corrigidos} trechos foram corrigidos`}` : '';
+    if (revisadas < total) {
+      const revisao = revisadas ? `${revisadas} de ${total} marcações já foram revisadas` : `Nenhuma das ${total} marcações foi revisada`;
+      return { rotulo: 'Em revisão', classe: 'alerta', detalhe: `${revisao}${correcao}.` };
+    }
+    return { rotulo: 'Marcações revisadas', classe: 'ok', detalhe: `A conclusão está com o analista${caso.baixadoEm ? `, e o Word foi baixado em ${caso.baixadoEm}` : ''}.` };
+  }
+
+  function etiquetaDeSituacao(situacao) {
+    const sinais = { ok: '✓', alerta: '!', neutro: '·' };
+    return `<span class="situacao situacao-${situacao.classe}"><span class="situacao-sinal" aria-hidden="true">${sinais[situacao.classe]}</span>${situacao.rotulo}</span>`;
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Cabeçalho e abas
+  // ---------------------------------------------------------------------------------------------
+  function desenharIndicadorDoModelo() {
+    const atual = MODELOS[estado.modelo];
+    const opcoes = Object.entries(MODELOS).map(([chave, m]) => `<button type="button" class="modelo-opcao" data-acao="modelo" data-valor="${chave}" `
+      + `aria-pressed="${chave === estado.modelo}"><span class="modelo-opcao-nome">${m.nome}</span><span class="modelo-opcao-onde">${m.onde}</span></button>`);
+    document.getElementById('modelo').innerHTML = `<button type="button" class="modelo-botao" data-acao="menu-modelo" `
+      + `aria-expanded="${estado.menuDoModelo}" aria-controls="modelo-menu" title="${esc(atual.nome)}">`
+      + '<span class="micro modelo-rotulo">Modelo de linguagem</span>'
+      + `<span class="modelo-nome" id="modelo-nome">${atual.curto}</span><span class="modelo-seta" aria-hidden="true">▾</span></button>`
+      + `<div class="modelo-menu" id="modelo-menu" role="group" aria-label="Modelo de linguagem em uso"${estado.menuDoModelo ? '' : ' hidden'}>`
+      + '<p class="micro">Modelo de linguagem em uso</p>'
+      + opcoes.join('')
+      + '<p class="modelo-nota">A solução acessa o modelo por uma interface única, de modo que a troca não altera o restante da tela. '
+      + 'A escolha é feita na etapa 1, com a TI da Grant Thornton.</p></div>';
+  }
+
+  function desenharAbas() {
+    document.getElementById('abas-lista').innerHTML = TELAS.map((t) => `<button class="aba" role="tab" type="button" `
+      + `data-acao="tela" data-valor="${t.id}" aria-selected="${t.id === estado.tela}">${t.rotulo}</button>`).join('');
+  }
+
+  function desenhar() {
+    desenharIndicadorDoModelo();
+    desenharAbas();
+    const tela = document.getElementById('tela');
+    const rolagem = window.scrollY;
+    desenhos[estado.tela](tela);
+    window.scrollTo(0, rolagem);
+  }
+
+  function fecharEdicao() {
+    estado.edicao = null;
+    estado.textoEmEdicao = null;
+  }
+
+  function ir(tela) {
+    estado.tela = tela;
+    fecharEdicao();
+    desenhar();
+    window.scrollTo(0, 0);
+  }
+
+  /** Rola até um elemento, descontando o cabeçalho fixo (scroll-margin-top no CSS). */
+  function rolarAte(id) {
+    const alvo = document.getElementById(id);
+    if (alvo) alvo.scrollIntoView({ block: 'start', behavior: movimentoReduzido() ? 'auto' : 'smooth' });
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Geração passo a passo
+  // ---------------------------------------------------------------------------------------------
+  let relogio = null;
+  const gerando = () => relogio !== null;
+
+  /** Guarda o rascunho atual, com as edições e as marcações revisadas, antes de uma geração nova o substituir. */
+  function guardarRascunhoAtual(caso) {
+    if (!caso.gerado) return;
+    const { versao, dataGeracao, analista, entradasGeradas, edicoes, revisadas, baixadoEm, ultimaSecao } = caso;
+    caso.anteriores.push(clonar({ versao, dataGeracao, analista, entradasGeradas, edicoes, revisadas, baixadoEm, ultimaSecao, gerado: true }));
+  }
+
+  function iniciarGeracao() {
+    // Uma geração por vez: sem esta verificação, um segundo clique em «Gerar» reiniciava a geração em curso, e
+    // o número do rascunho pulava
+    if (gerando()) return;
+    const caso = estadoDoCaso('saguarai');
+    guardarRascunhoAtual(caso);
+    Object.assign(caso, {
+      entradasGeradas: clonar(caso.entradas), edicoes: {}, revisadas: {}, gerado: false,
+      versao: caso.versao + 1, ultimaSecao: null, baixadoEm: null,
+    });
+    estado.casoAtivo = 'saguarai';
+    estado.versaoAberta = null;
+    estado.painel = { aba: 'revisao', origem: null, marca: null };
+    estado.geracao = { caso: 'saguarai', passo: 0, total: M.passosDaGeracao(dadosDoCaso('saguarai'), caso).length };
+    ir('geracao');
+    if (movimentoReduzido()) concluirGeracao();
+    else relogio = setInterval(avancarGeracao, PAUSA_ENTRE_PASSOS_MS);
+  }
+
+  function avancarGeracao() {
+    estado.geracao.passo += 1;
+    if (estado.geracao.passo >= estado.geracao.total) concluirGeracao();
+    else if (estado.tela === 'geracao') desenhar();
+  }
+
+  function concluirGeracao() {
+    clearInterval(relogio);
+    relogio = null;
+    const caso = estadoDoCaso('saguarai');
+    estado.geracao.passo = estado.geracao.total;
+    caso.gerado = true;
+    caso.dataGeracao = C.HOJE;
+    caso.registro.push({ quando: C.HOJE, texto: `Rascunho ${caso.versao} gerado por ${caso.analista}.` });
+    desenhar();
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Revisão do rascunho
+  // ---------------------------------------------------------------------------------------------
+  const casoAtivo = () => estadoDoCaso(estado.casoAtivo);
+  const secaoDoBloco = (idDoBloco) => idDoBloco.split('-')[0];
+  const tituloDaSecao = (idCaso, idSecao) => {
+    const i = dadosDoCaso(idCaso).secoes.findIndex((s) => s.id === idSecao);
+    return `seção ${i + 1}, ${dadosDoCaso(idCaso).secoes[i].titulo}`;
+  };
+
+  function registrar(texto) {
+    casoAtivo().registro.push({ quando: C.HOJE, texto });
+  }
+
+  function revisar(idDaMarca) {
+    const caso = casoAtivo();
+    caso.revisadas[idDaMarca] = { quem: estado.analista, quando: C.HOJE, nota: null };
+    caso.ultimaSecao = secaoDoBloco(idDaMarca);
+    registrar(`${estado.analista} marcou como revisado um trecho da ${tituloDaSecao(estado.casoAtivo, caso.ultimaSecao)}.`);
+  }
+
+  function reabrir(idDaMarca) {
+    delete casoAtivo().revisadas[idDaMarca];
+  }
+
+  function salvarEdicao() {
+    const campoDeTexto = document.getElementById('edicao-texto');
+    if (!campoDeTexto || !estado.edicao) return;
+    const caso = casoAtivo();
+    caso.edicoes[estado.edicao] = campoDeTexto.value.trim();
+    caso.ultimaSecao = secaoDoBloco(estado.edicao);
+    registrar(`${estado.analista} editou um trecho da ${tituloDaSecao(estado.casoAtivo, caso.ultimaSecao)}, e a conferência foi refeita.`);
+    fecharEdicao();
+  }
+
+  function abrirCaso(id) {
+    estado.casoAtivo = id;
+    estado.versaoAberta = null;
+    estado.painel = { aba: 'revisao', origem: null, marca: null };
+  }
+
+  /** Abre um rascunho anterior só para leitura, ou volta ao atual com versao = null. */
+  function abrirVersao(id, versao) {
+    abrirCaso(id);
+    estado.versaoAberta = versao;
+    ir('rascunho');
+  }
+
+  /** Outro analista assume o caso a partir do ponto em que o anterior parou, com tudo o que ele deixou. */
+  function retomar(id) {
+    const caso = estadoDoCaso(id);
+    if (caso.analista !== estado.analista) {
+      caso.retomadoDe = caso.analista;
+      caso.analista = estado.analista;
+      caso.registro.push({ quando: C.HOJE, texto: `${estado.analista} retomou o memorando de ${caso.retomadoDe}.` });
+    }
+    abrirCaso(id);
+    estado.destaque = caso.ultimaSecao;
+    ir('rascunho');
+    // Na tela larga, o aviso fica no painel fixo e a página vai até a seção. No celular, o aviso fica no topo
+    // e tem o botão que leva à seção, então a página não rola sozinha
+    if (caso.ultimaSecao && telaLarga()) rolarAte(`secao-${caso.ultimaSecao}`);
+  }
+
+  /** Baixa o rascunho que está na tela, seja o atual, seja um anterior aberto para leitura. */
+  function baixarWord() {
+    const versao = versaoEmTela(estado.casoAtivo);
+    window.RM_WORD.baixar(dadosDoCaso(estado.casoAtivo), versao);
+    if (!somenteLeitura(estado.casoAtivo)) versao.baixadoEm = C.HOJE;
+    registrar(`${estado.analista} baixou o rascunho ${versao.versao} em Word.`);
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Eventos
+  // ---------------------------------------------------------------------------------------------
+  // Cada ação muda o estado; a maioria redesenha depois. As que rolam a página devolvem false e
+  // cuidam do próprio desenho.
+  // As ações de revisão não valem num rascunho anterior, que é só de leitura
+  const soNoRascunhoAtual = (acao) => (alvo) => (somenteLeitura(estado.casoAtivo) ? false : acao(alvo));
+
+  const ACOES = {
+    tela: (alvo) => { ir(alvo.dataset.valor); return false; },
+    // O modelo de linguagem é peça substituível: trocar redesenha só o indicador, e a tela, com uma edição
+    // aberta e o texto já digitado, fica como está
+    'menu-modelo': () => { estado.menuDoModelo = !estado.menuDoModelo; desenharIndicadorDoModelo(); return false; },
+    modelo: (alvo) => {
+      estado.modelo = alvo.dataset.valor;
+      desenharIndicadorDoModelo();
+      document.querySelector(`.modelo-opcao[data-valor="${estado.modelo}"]`).focus();
+      return false;
+    },
+    modo: (alvo) => { estadoDoCaso('saguarai').entradas.modo = alvo.dataset.valor; },
+    cpc: (alvo) => { estadoDoCaso('saguarai').entradas.cpc = alvo.value; },
+    escopo: (alvo) => { estadoDoCaso('saguarai').entradas.escopo = alvo.value; },
+    documento: (alvo) => { estadoDoCaso('saguarai').entradas.documentos[Number(alvo.dataset.indice)] = alvo.checked; },
+    gerar: () => { iniciarGeracao(); return false; },
+    'abrir-caso': (alvo) => { abrirCaso(alvo.dataset.caso); ir('rascunho'); return false; },
+    'abrir-versao': (alvo) => {
+      abrirVersao(alvo.dataset.caso, alvo.dataset.versao === 'atual' ? null : Number(alvo.dataset.versao));
+      return false;
+    },
+    retomar: (alvo) => { retomar(alvo.dataset.caso); return false; },
+    'painel-aba': (alvo) => { estado.painel.aba = alvo.dataset.valor; },
+    origem: (alvo) => { Object.assign(estado.painel, { aba: 'revisao', origem: { tipo: 'campos', ids: alvo.dataset.campos.split(',') }, marca: null }); },
+    pagina: (alvo) => { Object.assign(estado.painel, { aba: 'revisao', origem: { tipo: 'pagina', pagina: Number(alvo.dataset.pagina), secao: alvo.dataset.secao }, marca: null }); },
+    marca: (alvo) => { Object.assign(estado.painel, { aba: 'revisao', origem: null, marca: alvo.dataset.marca }); },
+    'ir-trecho': (alvo) => {
+      estado.painel.marca = alvo.dataset.marca;
+      desenhar();
+      const trecho = document.querySelector(`[data-marca-id="${CSS.escape(alvo.dataset.marca)}"]`);
+      if (trecho) { trecho.scrollIntoView({ block: 'center', behavior: movimentoReduzido() ? 'auto' : 'smooth' }); trecho.focus({ preventScroll: true }); }
+      return false;
+    },
+    'ir-secao': (alvo) => { rolarAte(`secao-${alvo.dataset.secao}`); return false; },
+    revisar: soNoRascunhoAtual((alvo) => { revisar(alvo.dataset.marca); }),
+    reabrir: soNoRascunhoAtual((alvo) => { reabrir(alvo.dataset.marca); }),
+    editar: soNoRascunhoAtual((alvo) => {
+      estado.edicao = alvo.dataset.bloco;
+      estado.textoEmEdicao = null;
+      desenhar();
+      const campoDeTexto = document.getElementById('edicao-texto');
+      if (campoDeTexto) campoDeTexto.focus();
+      return false;
+    }),
+    'salvar-edicao': () => { salvarEdicao(); },
+    'cancelar-edicao': () => { fecharEdicao(); },
+    baixar: () => { baixarWord(); },
+  };
+
+  function acionar(alvo) {
+    const acao = ACOES[alvo.dataset.acao];
+    if (!acao) return;
+    if (acao(alvo) !== false) desenhar();
+  }
+
+  function aoClicar(evento) {
+    // Clique fora do menu do modelo fecha o menu
+    if (estado.menuDoModelo && !evento.target.closest('#modelo')) {
+      estado.menuDoModelo = false;
+      desenharIndicadorDoModelo();
+    }
+    const alvo = evento.target.closest('[data-acao]');
+    if (!alvo || alvo.tagName === 'SELECT' || alvo.tagName === 'INPUT') return;
+    acionar(alvo);
+  }
+
+  function aoMudar(evento) {
+    const alvo = evento.target;
+    if ((alvo.tagName === 'SELECT' || alvo.tagName === 'INPUT') && alvo.dataset.acao) acionar(alvo);
+  }
+
+  /** Cada tecla na caixa de edição guarda o texto no estado, e o redesenho devolve à caixa o que foi digitado. */
+  function aoDigitar(evento) {
+    if (evento.target.id === 'edicao-texto') estado.textoEmEdicao = evento.target.value;
+  }
+
+  function aoTeclar(evento) {
+    // Trecho clicável dentro do texto responde a Enter e a espaço, como um botão
+    if ((evento.key === 'Enter' || evento.key === ' ') && evento.target.matches('[role="button"][data-acao]')) {
+      evento.preventDefault();
+      acionar(evento.target);
+      return;
+    }
+    if (evento.key === 'Escape' && estado.menuDoModelo) {
+      estado.menuDoModelo = false;
+      desenharIndicadorDoModelo();
+      document.querySelector('.modelo-botao').focus();
+    }
+  }
+
+  function iniciar() {
+    document.getElementById('topo-analista').innerHTML = `<span class="avatar" aria-hidden="true">${estado.analista.split(' ').map((p) => p[0]).join('')}</span>`
+      + `<span class="topo-analista-nome">${estado.analista}</span>`;
+    document.addEventListener('click', aoClicar);
+    document.addEventListener('change', aoMudar);
+    document.addEventListener('input', aoDigitar);
+    document.addEventListener('keydown', aoTeclar);
+    desenhar();
+  }
+
+  window.RM = {
+    estado, TELAS, MODELOS, ORIGENS,
+    registrarTela, esc, cabecalho, etiquetaDeOrigem, trechoEmHtml, situacaoDoCaso, etiquetaDeSituacao,
+    dadosDoCaso, estadoDoCaso, rascunhoDoCaso, casoAtivo, versaoEmTela, somenteLeitura, gerando,
+    desenhar, ir, iniciar, retomar, rolarAte,
+    /** Atalhos para os testes: mudam o estado do mesmo jeito que os controles da tela. */
+    definir(mudancas) {
+      Object.entries(mudancas).forEach(([chave, valor]) => {
+        if (typeof valor === 'object' && valor !== null && !Array.isArray(valor)) Object.assign(estado[chave], valor);
+        else estado[chave] = valor;
+      });
+      desenhar();
+    },
+    /** Gera e conclui de imediato; se já houver uma geração em curso, só a conclui. */
+    gerarAgora() {
+      iniciarGeracao();
+      if (gerando()) concluirGeracao();
+    },
+    reiniciar() {
+      clearInterval(relogio);
+      relogio = null;
+      Object.assign(estado, estadoInicial());
+      desenhar();
+      window.scrollTo(0, 0);
+    },
+  };
+})();
+
+</script>
+<script>
+/* tela-novo.js — Novo memorando.
+ *
+ * O analista seleciona a pasta do caso ou envia o laudo, o modelo do avaliador e o modelo GT, escolhe o CPC
+ * aplicável e informa o escopo da revisão e a documentação recebida. No protótipo, os insumos do caso
+ * fictício já estão carregados, e nenhum envio real acontece.
+ */
+(function () {
+  'use strict';
+
+  const C = window.RM_CASOS;
+  const RM = window.RM;
+  const esc = RM.esc;
+
+  function linhaDoArquivo(arquivo) {
+    return `<li class="arquivo" data-papel="${esc(arquivo.papel)}"><span class="arquivo-tipo arquivo-${arquivo.tipo.toLowerCase()}">${arquivo.tipo}</span>`
+      + `<span class="arquivo-texto"><span class="arquivo-nome">${esc(arquivo.nome)}</span><span class="arquivo-detalhe">${esc(arquivo.detalhe)}</span></span>`
+      + `<span class="tag">${esc(arquivo.papel)}</span></li>`;
+  }
+
+  function cartaoDosInsumos(dados, entradas) {
+    const modos = [['pasta', 'Selecionar a pasta do caso'], ['envio', 'Enviar os arquivos']]
+      .map(([valor, rotulo]) => `<button type="button" data-acao="modo" data-valor="${valor}" aria-pressed="${entradas.modo === valor}">${rotulo}</button>`);
+    const arquivos = Object.values(dados.arquivos);
+    const corpo = entradas.modo === 'pasta'
+      ? '<div class="campo"><span class="micro">Pasta do caso no servidor</span>'
+        + `<div class="caminho" id="caminho-da-pasta">${esc(dados.pasta)}</div></div>`
+        + '<p class="nota">O agente identificou na pasta os três insumos do caso.</p>'
+        + `<ul class="arquivos" id="arquivos">${arquivos.map(linhaDoArquivo).join('')}</ul>`
+      : `<div class="envios" id="arquivos">${arquivos.map((a) => `<div class="envio" data-papel="${esc(a.papel)}"><span class="micro">${esc(a.papel)}</span>`
+        + `<span class="envio-nome"><span class="arquivo-tipo arquivo-${a.tipo.toLowerCase()}">${a.tipo}</span>${esc(a.nome)}</span>`
+        + '<span class="envio-ok"><span aria-hidden="true">✓ </span>Arquivo carregado</span></div>').join('')}</div>`
+        + '<p class="nota">Os arquivos do caso fictício já estão carregados, e nenhum envio real é necessário.</p>';
+    return '<section class="cartao" id="cartao-insumos"><div class="cartao-topo"><h2>Insumos do caso</h2>'
+      + `<div class="segmentado" role="group" aria-label="Forma de enviar os insumos">${modos.join('')}</div></div>${corpo}</section>`;
+  }
+
+  function cartaoDoCpc(dados, entradas) {
+    const opcoes = Object.entries(C.CPCS).map(([numero, titulo]) => `<option value="${numero}"${numero === entradas.cpc ? ' selected' : ''}>CPC ${numero} – ${titulo}</option>`);
+    const aviso = entradas.cpc === dados.cpc ? ''
+      : `<p class="aviso-cpc" id="aviso-cpc"><span aria-hidden="true">! </span>O caso fictício desta tela foi montado para o CPC ${dados.cpc}. `
+        + 'Escolha o CPC 46 para gerar o rascunho, ou abra no histórico o caso sob o CPC 01.</p>';
+    return '<section class="cartao" id="cartao-cpc"><h2>CPC aplicável</h2>'
+      + '<p class="texto-apoio">O CPC escolhido define o texto normativo da seção 4 do memorando. Os CPCs do piloto são definidos na etapa 1.</p>'
+      + `<label class="campo campo-largo"><span class="micro">Pronunciamento</span><select class="seletor" id="seletor-cpc" data-acao="cpc">${opcoes.join('')}</select></label>${aviso}</section>`;
+  }
+
+  function cartaoDoEscopo(dados, entradas) {
+    const opcoes = Object.entries(dados.escopos).map(([chave, e]) => `<label class="opcao${entradas.escopo === chave ? ' opcao-marcada' : ''}">`
+      + `<input type="radio" name="escopo" value="${chave}" data-acao="escopo"${entradas.escopo === chave ? ' checked' : ''}>`
+      + `<span class="opcao-texto"><span class="opcao-rotulo">${esc(e.rotulo)}</span><span class="opcao-apoio">${esc(e.apoio)}</span></span></label>`);
+    return '<section class="cartao" id="cartao-escopo"><h2>Escopo da revisão</h2>'
+      + '<p class="texto-apoio">O escopo vem do pré-contrato e define o texto padrão da seção 2 do memorando.</p>'
+      + `<div class="opcoes" role="radiogroup" aria-label="Escopo da revisão">${opcoes.join('')}</div></section>`;
+  }
+
+  function cartaoDaDocumentacao(dados, entradas) {
+    const M = window.RM_MEMORANDO;
+    const itens = dados.documentos.map((d, i) => `<label class="opcao opcao-caixa${d.fixo ? ' opcao-fixa' : ''}">`
+      + `<input type="checkbox" data-acao="documento" data-indice="${i}"${entradas.documentos[i] ? ' checked' : ''}${d.fixo ? ' disabled' : ''}>`
+      + `<span class="opcao-texto"><span class="opcao-rotulo">${esc(M.resolver(d.texto, dados))}</span>`
+      + `${d.fixo ? '<span class="opcao-apoio">O insumo do caso entra sempre na lista.</span>' : ''}</span></label>`);
+    return '<section class="cartao" id="cartao-documentacao"><h2>Documentação recebida</h2>'
+      + '<p class="texto-apoio">Os documentos marcados entram na seção 3 do memorando.</p>'
+      + `<div class="opcoes">${itens.join('')}</div></section>`;
+  }
+
+  function cartaoDoResumo(dados, caso, entradas) {
+    // Enquanto uma geração corre, o botão fica inativo: um segundo clique faria o número do rascunho pular
+    const gerando = RM.gerando();
+    const podeGerar = entradas.cpc === dados.cpc && !gerando;
+    let situacao = '';
+    if (gerando) {
+      situacao = `<p class="nota" id="nota-em-geracao">O rascunho ${caso.versao} está sendo gerado, e o botão volta a funcionar quando a geração terminar.</p>`
+        + '<button type="button" class="link" data-acao="tela" data-valor="geracao">Acompanhar a geração</button>';
+    } else if (caso.gerado) {
+      situacao = `<p class="nota" id="nota-novo-rascunho">O rascunho ${caso.versao} deste caso já existe. Gerar de novo cria o rascunho ${caso.versao + 1}, que passa a ser o atual, `
+        + `e o rascunho ${caso.versao} fica guardado para consulta, com as edições e as marcações dele.</p>`
+        + '<button type="button" class="link" data-acao="abrir-caso" data-caso="saguarai">Abrir o rascunho atual</button>';
+    }
+    return '<aside class="cartao resumo-novo" id="resumo-novo"><h2>Rascunho a gerar</h2><dl class="dados">'
+      + `<div><dt>Empresa avaliada</dt><dd>${esc(dados.empresa)}</dd></div>`
+      + `<div><dt>Cliente da auditoria</dt><dd>${esc(dados.cliente)}</dd></div>`
+      + `<div><dt>Objeto</dt><dd>${esc(dados.objeto)}</dd></div>`
+      + `<div><dt>Analista responsável</dt><dd>${esc(caso.analista)}</dd></div></dl>`
+      + '<h3 class="micro">Como cada seção é preenchida</h3><ul class="como-preenche">'
+      + `<li>${RM.etiquetaDeOrigem('regra')}<p>O texto fixo, o texto normativo do CPC, o escopo, a documentação recebida e as tabelas de projeções são preenchidos por regra.</p></li>`
+      + `<li>${RM.etiquetaDeOrigem('modelo', 'Modelo de linguagem')}<p>A descrição da empresa, as premissas, as projeções financeiras (PFI) e a taxa de desconto são redigidas pelo modelo de linguagem.</p></li>`
+      + `<li>${RM.etiquetaDeOrigem('analista', 'Analista')}<p>A conclusão fica em branco, reservada ao analista.</p></li></ul>`
+      + '<p class="nota">Antes de o rascunho chegar ao analista, a conferência compara cada valor com a ficha do caso e cada nome com os insumos.</p>'
+      + `<button type="button" class="botao botao-grande" id="botao-gerar" data-acao="gerar"${podeGerar ? '' : ' disabled'}>Gerar rascunho</button>`
+      + `${situacao}</aside>`;
+  }
+
+  RM.registrarTela('novo', (tela) => {
+    const dados = RM.dadosDoCaso('saguarai');
+    const caso = RM.estadoDoCaso('saguarai');
+    const entradas = caso.entradas;
+    tela.innerHTML = RM.cabecalho('Novo memorando',
+      'Selecione a pasta do caso ou envie os três insumos, escolha o CPC aplicável e informe o escopo da revisão e a documentação recebida. '
+      + 'O agente lê os insumos e redige o rascunho no template da Grant Thornton.')
+      + `<div class="grade-novo"><div class="pilha">${cartaoDosInsumos(dados, entradas)}`
+      + `<div class="grade-2">${cartaoDoCpc(dados, entradas)}${cartaoDoEscopo(dados, entradas)}</div>`
+      + `${cartaoDaDocumentacao(dados, entradas)}</div>${cartaoDoResumo(dados, caso, entradas)}</div>`;
+  });
+})();
+
+/* tela-geracao.js — acompanhamento da geração do rascunho.
+ *
+ * Mostra a leitura dos insumos, a ficha do caso e cada seção sendo preenchida, com a etiqueta que diz se a
+ * seção saiu por regra ou foi redigida pelo modelo de linguagem. A tela não mostra duração nem estimativa de
+ * tempo: o tempo de preparação é medido no hypercare. O avanço dos passos é só animação (nucleo.js).
+ */
+(function () {
+  'use strict';
+
+  const RM = window.RM;
+  const M = window.RM_MEMORANDO;
+  const esc = RM.esc;
+
+  const ESTADOS = {
+    pronto: { sinal: '✓', texto: 'Concluído' },
+    andamento: { sinal: '…', texto: 'Em andamento' },
+    fila: { sinal: '·', texto: 'Na fila' },
+  };
+
+  function detalheDaSecao(secao) {
+    if (secao.origem === 'modelo') return `O modelo de linguagem redige a seção a partir do laudo, páginas ${secao.fonteDoLaudo.paginas}, e dos valores da ficha do caso.`;
+    return secao.como;
+  }
+
+  function itemDoPasso(passo, situacao) {
+    // A conclusão não é preenchida: quando chega a vez dela, ela fica em branco
+    const e = passo.origem === 'analista' && situacao === 'pronto' ? { sinal: '–', texto: 'Em branco' } : ESTADOS[situacao];
+    const detalhe = passo.grupo === 'secao' ? detalheDaSecao(passo.secao) : passo.detalhe;
+    return `<li class="passo passo-${situacao}" data-passo="${passo.id}" data-estado="${situacao}" data-origem="${passo.origem}">`
+      + `<span class="passo-sinal" aria-hidden="true">${e.sinal}</span><div class="passo-corpo"><div class="passo-topo">`
+      + `<span class="passo-titulo">${esc(passo.titulo)}</span>${RM.etiquetaDeOrigem(passo.origem, passo.etiqueta)}<span class="passo-estado">${e.texto}</span></div>`
+      + `${situacao === 'fila' ? '' : `<p class="passo-detalhe">${esc(detalhe)}</p>`}</div></li>`;
+  }
+
+  /** Os passos de um grupo, cada um pronto, em andamento ou na fila conforme a posição na sequência. */
+  function listaDePassos(passos, grupo, passoAtual) {
+    return passos.map((p, i) => ({ p, i })).filter(({ p }) => p.grupo === grupo).map(({ p, i }) => {
+      const situacao = i < passoAtual ? 'pronto' : i === passoAtual ? 'andamento' : 'fila';
+      return itemDoPasso(p, situacao);
+    }).join('');
+  }
+
+  /** A seção mais recente já preenchida, como ela aparece no documento. A conclusão em branco não entra. */
+  function previa(passos, passoAtual, caso) {
+    const prontas = passos.slice(0, passoAtual).filter((p) => p.grupo === 'secao' && p.origem !== 'analista');
+    if (!prontas.length) {
+      return '<section class="cartao" id="previa"><h2>Última seção preenchida</h2>'
+        + '<p class="texto-apoio">A prévia aparece quando a primeira seção do memorando estiver pronta.</p></section>';
+    }
+    const secao = prontas[prontas.length - 1].secao;
+    const corpo = secao.blocos.map((b) => {
+      if (b.tipo === 'p') return `<p class="doc-p">${RM.trechoEmHtml(b.segmentos, { interativo: false, revisadas: caso.revisadas })}</p>`;
+      if (b.tipo === 'lista') return `<ul class="doc-lista">${b.itens.map((it) => `<li>${RM.trechoEmHtml(it.segmentos, { interativo: false })}</li>`).join('')}</ul>`;
+      return `<p class="nota">A tabela reproduz ${b.linhas.length} linhas do modelo GT para os anos de ${b.anos[0]} a ${b.anos[b.anos.length - 1]}.</p>`;
+    }).join('');
+    return `<section class="cartao" id="previa"><div class="cartao-topo"><h2>Última seção preenchida</h2>${RM.etiquetaDeOrigem(secao.origem)}</div>`
+      + `<div class="previa-doc"><h3 class="previa-titulo">${secao.numero}. ${esc(secao.titulo)}</h3>${corpo}</div></section>`;
+  }
+
+  function cartaoPronto(dados, rascunho) {
+    const n = rascunho.marcacoes.length;
+    return '<section class="cartao cartao-pronto" id="geracao-pronta"><h2>Rascunho pronto para revisão</h2>'
+      + `<p>O rascunho tem ${rascunho.secoes.length} seções e usa uma ficha com ${dados.campos.length} campos. `
+      + `${n === 1 ? 'Um trecho redigido pelo modelo de linguagem ficou marcado' : `${n} trechos redigidos pelo modelo de linguagem ficaram marcados`} para revisão, e a conclusão aguarda o analista.</p>`
+      + '<button type="button" class="botao" id="abrir-rascunho" data-acao="tela" data-valor="rascunho">Abrir o rascunho</button></section>';
+  }
+
+  RM.registrarTela('geracao', (tela) => {
+    const geracao = RM.estado.geracao;
+    const titulo = 'Geração do rascunho';
+    const sub = 'O agente lê os insumos, consolida a ficha do caso e preenche o memorando seção por seção. '
+      + 'Cada seção indica se foi preenchida por regra ou redigida pelo modelo de linguagem.';
+    if (geracao.passo < 0) {
+      tela.innerHTML = RM.cabecalho(titulo, sub)
+        + '<section class="cartao vazio" id="geracao-vazia"><p>Nenhum rascunho foi gerado nesta sessão. Informe os insumos em Novo memorando e gere o rascunho.</p>'
+        + '<button type="button" class="botao" data-acao="tela" data-valor="novo">Ir para Novo memorando</button></section>';
+      return;
+    }
+    const dados = RM.dadosDoCaso(geracao.caso);
+    const caso = RM.estadoDoCaso(geracao.caso);
+    const passos = M.passosDaGeracao(dados, caso);
+    const pronto = geracao.passo >= passos.length;
+    const secoes = passos.filter((p) => p.grupo === 'secao');
+    const secoesProntas = passos.slice(0, geracao.passo).filter((p) => p.grupo === 'secao').length;
+    const andamento = pronto ? 'Rascunho pronto' : `Seção ${Math.min(secoesProntas + 1, secoes.length)} de ${secoes.length}`;
+    const fracao = Math.min(1, geracao.passo / passos.length);
+
+    tela.innerHTML = RM.cabecalho(titulo, sub)
+      + '<div class="grade-geracao"><section class="cartao" id="passos">'
+      + `<div class="cartao-topo"><div><span class="micro">${dados.codigo} · CPC ${dados.cpc}</span><h2>${esc(dados.empresa)}</h2></div>`
+      + `<span class="progresso-texto" id="progresso-texto">${andamento}</span></div>`
+      + `<div class="progresso" role="progressbar" aria-label="Passos concluídos" aria-valuemin="0" aria-valuemax="${passos.length}" aria-valuenow="${Math.min(geracao.passo, passos.length)}">`
+      + `<span style="width:${(fracao * 100).toFixed(1)}%"></span></div>`
+      + `<h3 class="micro grupo-passos">Leitura dos insumos</h3><ol class="passos">${listaDePassos(passos, 'leitura', geracao.passo)}</ol>`
+      + `<h3 class="micro grupo-passos">Seções do memorando</h3><ol class="passos" id="passos-secoes">${listaDePassos(passos, 'secao', geracao.passo)}</ol>`
+      + `<h3 class="micro grupo-passos">Conferência determinística</h3><ol class="passos">${listaDePassos(passos, 'conferencia', geracao.passo)}</ol>`
+      + `</section><div class="pilha">${pronto ? cartaoPronto(dados, RM.rascunhoDoCaso(geracao.caso)) : ''}${previa(passos, geracao.passo, caso)}</div></div>`;
+  });
+})();
+
+/* tela-rascunho.js — o rascunho do memorando com as marcações de revisão.
+ *
+ * Três colunas: o sumário das seções, o documento e o painel de revisão. Clicar num valor do documento mostra
+ * no painel a origem dele (arquivo e página do laudo, ou arquivo, aba e célula da planilha). As marcações da
+ * conferência ficam destacadas no texto e listadas no painel, onde o analista as marca como revisadas. As
+ * seções redigidas pelo modelo de linguagem podem ser editadas, e a conferência é refeita ao salvar. A
+ * conclusão fica em branco.
+ */
+(function () {
+  'use strict';
+
+  const C = window.RM_CASOS;
+  const M = window.RM_MEMORANDO;
+  const RM = window.RM;
+  const esc = RM.esc;
+
+  const MOTIVOS = {
+    valor: 'Valor ausente da ficha do caso',
+    nome: 'Nome ausente dos insumos',
+  };
+
+  const NOMES_CURTOS_DOS_ARQUIVOS = { laudo: 'Laudo de avaliação', avaliador: 'Modelo do avaliador', gt: 'Modelo GT' };
+
+  // ---------------------------------------------------------------------------------------------
+  // Cabeçalho do caso
+  // ---------------------------------------------------------------------------------------------
+  /** Os rascunhos do caso, do mais antigo ao atual. Só aparece quando o caso já foi gerado mais de uma vez. */
+  function seletorDeVersoes(id, caso, versao) {
+    if (!caso.anteriores.length) return '';
+    const botoes = [...caso.anteriores, caso].map((v) => {
+      const atual = v === caso;
+      return `<button type="button" data-acao="abrir-versao" data-caso="${id}" data-versao="${atual ? 'atual' : v.versao}" `
+        + `aria-pressed="${v === versao}">Rascunho ${v.versao}${atual ? ' (atual)' : ''}</button>`;
+    });
+    return `<div class="segmentado versoes" id="versoes" role="group" aria-label="Rascunhos do caso">${botoes.join('')}</div>`;
+  }
+
+  function barraDoCaso(id, dados, caso, versao, rascunho) {
+    const pendentes = M.pendentes(rascunho).length;
+    const etiqueta = pendentes
+      ? `<span class="tag tag-alerta" id="contagem-pendentes" data-pendentes="${pendentes}"><span aria-hidden="true">!</span>${pendentes === 1 ? '1 marcação pendente' : `${pendentes} marcações pendentes`}</span>`
+      : '<span class="tag tag-ok" id="contagem-pendentes" data-pendentes="0"><span aria-hidden="true">✓</span>Nenhuma marcação pendente</span>';
+    return '<section class="cartao barra-caso" id="barra-caso"><div class="barra-caso-id">'
+      + `<span class="micro">${dados.codigo} · CPC ${dados.cpc} · ${esc(dados.objeto)}</span><h2>${esc(dados.empresa)}</h2>`
+      + `${dados.cliente !== dados.empresa ? `<p class="barra-caso-cliente">Cliente da auditoria: ${esc(dados.cliente)}</p>` : ''}</div>`
+      + '<dl class="barra-caso-dados">'
+      + `<div><dt>Rascunho</dt><dd id="versao-em-tela" data-versao="${versao.versao}">${versao.versao}, gerado em ${versao.dataGeracao}</dd></div>`
+      + `<div><dt>Analista responsável</dt><dd id="analista-responsavel">${esc(caso.analista)}</dd></div>`
+      + `<div><dt>Revisão</dt><dd>${etiqueta}</dd></div></dl>`
+      + '<button type="button" class="botao" id="baixar-word" data-acao="baixar">Baixar em Word</button>'
+      + `${seletorDeVersoes(id, caso, versao)}</section>`;
+  }
+
+  function avisoDeLeitura(id, caso, versao) {
+    if (versao === caso) return '';
+    return '<section class="aviso-leitura" id="aviso-leitura"><span class="micro">Somente leitura</span>'
+      + `<p>Você está vendo o rascunho ${versao.versao}, gerado em ${versao.dataGeracao}, com as edições e as marcações que ele tinha quando `
+      + `o rascunho ${caso.versao} foi gerado. Este rascunho fica guardado para consulta e não aceita edição nem revisão.</p>`
+      + `<button type="button" class="link" data-acao="abrir-versao" data-caso="${id}" data-versao="atual">Voltar ao rascunho ${caso.versao}, o atual</button></section>`;
+  }
+
+  /** O aviso de quem parou e onde. Sai duas vezes: no painel (telas largas) e acima do documento (celular). */
+  function avisoDeRetomada(dados, caso, rascunho, lugar) {
+    if (!caso.retomadoDe) return '';
+    const secao = rascunho.secoes.find((s) => s.id === caso.ultimaSecao);
+    const total = rascunho.marcacoes.length;
+    const revisadas = total - M.pendentes(rascunho).length;
+    const corrigidos = Object.keys(caso.edicoes).length;
+    const atributos = lugar === 'painel' ? 'class="aviso-retomada so-largo" id="aviso-retomada"' : 'class="aviso-retomada so-estreito"';
+    return `<section ${atributos}><span class="micro">Memorando retomado</span>`
+      + `<p>Você retomou o memorando de ${esc(caso.retomadoDe)}, que parou na seção ${secao.numero}, ${esc(secao.titulo)}. `
+      + `A ficha do caso, o rascunho ${caso.versao} e as marcações foram preservados: ${revisadas} de ${total} marcações já estão revisadas`
+      + `${corrigidos ? `, e ${corrigidos === 1 ? '1 trecho foi corrigido' : `${corrigidos} trechos foram corrigidos`} no texto` : ''}.</p>`
+      + `<div class="aviso-acoes"><button type="button" class="link" data-acao="ir-secao" data-secao="${secao.id}">Ir para a seção ${secao.numero}</button>`
+      + '<button type="button" class="link" data-acao="painel-aba" data-valor="registro">Ver o registro do caso</button></div></section>';
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Sumário
+  // ---------------------------------------------------------------------------------------------
+  function sumario(rascunho, caso) {
+    const itens = rascunho.secoes.map((s) => {
+      const pend = rascunho.marcacoes.filter((m) => m.secao === s.id && !m.revisada).length;
+      const parou = caso.retomadoDe && caso.ultimaSecao === s.id ? '<span class="sumario-parou">parou aqui</span>' : '';
+      return `<li><button type="button" class="sumario-item" data-acao="ir-secao" data-secao="${s.id}">`
+        + `<span class="amostra amostra-${s.origem}" aria-hidden="true"></span><span class="sumario-titulo">${s.numero}. ${esc(s.titulo)}</span>`
+        + `${pend ? `<span class="sumario-marca" aria-label="${pend} marcação pendente">! ${pend}</span>` : ''}${parou}</button></li>`;
+    });
+    return '<nav class="sumario" id="sumario" aria-label="Seções do memorando"><span class="micro">Seções</span>'
+      + `<ol>${itens.join('')}</ol><div class="legenda">${RM.etiquetaDeOrigem('regra')}${RM.etiquetaDeOrigem('modelo', 'Modelo de linguagem')}`
+      + `${RM.etiquetaDeOrigem('analista', 'Analista')}</div></nav>`;
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Documento
+  // ---------------------------------------------------------------------------------------------
+  function blocoDeParagrafo(bloco, secao, caso, opcoes) {
+    if (RM.estado.edicao === bloco.id && !opcoes.somenteLeitura) {
+      const texto = RM.estado.textoEmEdicao === null ? bloco.texto : RM.estado.textoEmEdicao;
+      return `<div class="doc-edicao" id="bloco-${bloco.id}"><label class="micro" for="edicao-texto">Editar o trecho</label>`
+        + `<textarea id="edicao-texto" rows="6">${esc(texto)}</textarea>`
+        + '<p class="nota">Ao salvar, a conferência compara de novo cada valor com a ficha do caso e cada nome com os insumos.</p>'
+        + '<div class="doc-edicao-acoes"><button type="button" class="botao" data-acao="salvar-edicao">Salvar e conferir</button>'
+        + '<button type="button" class="botao-secundario" data-acao="cancelar-edicao">Cancelar</button></div></div>';
+    }
+    const editavel = secao.origem === 'modelo' && !opcoes.somenteLeitura;
+    return `<div class="doc-bloco" id="bloco-${bloco.id}"><p class="doc-p" data-bloco="${bloco.id}">${RM.trechoEmHtml(bloco.segmentos, opcoes)}</p>`
+      + `${editavel || bloco.editado ? '<div class="doc-bloco-rodape">' : ''}`
+      + `${bloco.editado ? '<span class="doc-editado">Editado pelo analista</span>' : ''}`
+      + `${editavel ? `<button type="button" class="doc-editar" data-acao="editar" data-bloco="${bloco.id}">Editar trecho</button>` : ''}`
+      + `${editavel || bloco.editado ? '</div>' : ''}</div>`;
+  }
+
+  function tabelaDoDocumento(bloco, camposAtivos) {
+    const cabecalho = `<tr><th scope="col">R$ mil</th>${bloco.anos.map((a) => `<th scope="col">${a}</th>`).join('')}</tr>`;
+    const linhas = bloco.linhas.map((l) => `<tr><th scope="row">${esc(l.rotulo)}</th>${l.celulas.map((c) => `<td>`
+      + `<span class="valor${camposAtivos.includes(c.campo) ? ' valor-ativo' : ''}" role="button" tabindex="0" data-acao="origem" `
+      + `data-campos="${c.campo}" data-campo-tabela="${c.campo}">${c.texto}</span></td>`).join('')}</tr>`);
+    return `<div class="rolagem"><table class="doc-tabela" id="tabela-projecoes"><thead>${cabecalho}</thead><tbody>${linhas.join('')}</tbody></table></div>`;
+  }
+
+  function secaoDoDocumento(secao, caso, opcoes) {
+    const destacada = RM.estado.destaque === secao.id ? ' destacada' : '';
+    const fonte = secao.fonteDoLaudo
+      ? `<p class="doc-fonte">O modelo de linguagem redigiu esta seção a partir do laudo, <button type="button" class="link" data-acao="pagina" `
+        + `data-pagina="${secao.fonteDoLaudo.pagina}" data-secao="${secao.fonte}">páginas ${secao.fonteDoLaudo.paginas}</button>, e dos valores da ficha do caso.</p>`
+      : '';
+    let corpo;
+    if (secao.origem === 'analista') {
+      corpo = '<p class="doc-nota-analista">A conclusão fica em branco, reservada ao analista, e segue assim no Word.</p>'
+        + '<div class="doc-conclusao" id="conclusao" aria-label="Conclusão em branco"></div>';
+    } else {
+      corpo = secao.blocos.map((b) => {
+        if (b.tipo === 'p') return blocoDeParagrafo(b, secao, caso, opcoes);
+        if (b.tipo === 'lista') return `<ul class="doc-lista">${b.itens.map((it) => `<li>${RM.trechoEmHtml(it.segmentos, opcoes)}</li>`).join('')}</ul>`;
+        return tabelaDoDocumento(b, opcoes.camposAtivos);
+      }).join('');
+    }
+    return `<section class="doc-secao doc-secao-${secao.origem}${destacada}" id="secao-${secao.id}" data-secao="${secao.id}" data-origem="${secao.origem}">`
+      + `<div class="doc-secao-topo"><h3>${secao.numero}. ${esc(secao.titulo)}</h3>${RM.etiquetaDeOrigem(secao.origem)}</div>${fonte}${corpo}</section>`;
+  }
+
+  function documento(dados, caso, rascunho, opcoes) {
+    const logo = document.querySelector('.topo-logo').getAttribute('src');
+    const dataBase = M.campo(dados, 'data.base');
+    const identificacao = [
+      ['Cliente da auditoria', esc(dados.cliente)],
+      ['Empresa avaliada', esc(dados.empresa)],
+      ['Avaliador', esc(dados.avaliador)],
+      ['Data-base', RM.trechoEmHtml([{ tipo: 'valor', texto: M.formatar(dataBase), campos: [dataBase.id] }], opcoes)],
+      ['CPC aplicável', `CPC ${dados.cpc} – ${C.CPCS[dados.cpc]}`],
+      ['Preparado por', `${esc(caso.analista)}, a partir do rascunho gerado pelo agente`],
+    ].map(([rotulo, valor]) => `<tr><th scope="row">${rotulo}</th><td>${valor}</td></tr>`).join('');
+    return '<article class="documento" id="documento" aria-label="Rascunho do memorando">'
+      + `<header class="doc-topo"><img class="doc-logo" src="${logo}" alt="Grant Thornton"><span class="doc-area">Strategy and Transactions</span></header>`
+      + `<h2 class="doc-titulo">Memorando de suporte à auditoria</h2><p class="doc-sub">Rascunho ${caso.versao} · ${esc(dados.objeto)}</p>`
+      + `<table class="doc-identificacao">${identificacao}</table>`
+      + `${rascunho.secoes.map((s) => secaoDoDocumento(s, caso, opcoes)).join('')}</article>`;
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Painel: origem do valor
+  // ---------------------------------------------------------------------------------------------
+  /** O texto da página do laudo, com o valor procurado destacado. */
+  function trechoDoLaudo(dados, pagina, destacar) {
+    let texto = esc(dados.laudo.paginas[pagina]);
+    if (destacar) texto = texto.split(esc(destacar)).join(`<mark>${esc(destacar)}</mark>`);
+    return `<blockquote class="trecho-laudo" data-pagina="${pagina}"><span class="micro">Laudo, página ${pagina}</span><p>${texto}</p></blockquote>`;
+  }
+
+  /** A aba da planilha em grade, com a linha, a coluna e a célula de origem destacadas. */
+  function gradeDaPlanilha(dados, alvo) {
+    const { arquivo, aba, celula } = alvo.origem;
+    const cabecalho = dados.planilhas[arquivo][aba];
+    const campos = dados.campos.filter((c) => c.origem.arquivo === arquivo && c.origem.aba === aba);
+    const porCelula = new Map(campos.map((c) => [c.origem.celula, c]));
+    const linhaDa = (c) => Number(c.origem.celula.slice(1));
+    const linhas = [...new Set(campos.map(linhaDa))].sort((a, b) => a - b);
+    const colunas = [...new Set([...campos.map((c) => c.origem.celula[0]), ...Object.keys(cabecalho.colunas)])].sort();
+    const colunaAlvo = celula[0];
+    const linhaAlvo = Number(celula.slice(1));
+    const rotuloDaLinha = (n) => campos.find((c) => linhaDa(c) === n).linha || '';
+
+    const topo = `<tr><th class="grade-canto"></th><th>B</th>${colunas.map((c) => `<th class="${c === colunaAlvo ? 'grade-ativa' : ''}">${c}</th>`).join('')}</tr>`;
+    const linhaDoCabecalho = `<tr><th class="grade-num">${cabecalho.linha}</th><td class="grade-rotulo"></td>`
+      + `${colunas.map((c) => `<td class="grade-cab">${esc(cabecalho.colunas[c] || '')}</td>`).join('')}</tr>`;
+    const corpo = linhas.map((n) => `<tr><th class="grade-num${n === linhaAlvo ? ' grade-ativa' : ''}">${n}</th>`
+      + `<td class="grade-rotulo">${esc(rotuloDaLinha(n))}</td>${colunas.map((c) => {
+        const cel = porCelula.get(c + n);
+        const classe = c + n === celula ? ' class="grade-alvo"' : '';
+        return `<td${classe}${cel ? ` data-celula="${c + n}"` : ''}>${cel ? M.formatarNaTabela(cel) : ''}</td>`;
+      }).join('')}</tr>`).join('');
+    return `<div class="rolagem grade-rolagem"><table class="grade-planilha" aria-label="Aba ${esc(aba)}"><thead>${topo}</thead>`
+      + `<tbody>${linhaDoCabecalho}${corpo}</tbody></table></div>`;
+  }
+
+  function detalheDoCampo(dados, c) {
+    const arquivo = dados.arquivos[c.origem.arquivo];
+    const local = c.origem.arquivo === 'laudo'
+      ? `<div><dt>Página</dt><dd class="mono" data-local="pagina">${c.origem.pagina}</dd></div>`
+      : `<div><dt>Aba</dt><dd data-local="aba">${esc(c.origem.aba)}</dd></div><div><dt>Célula</dt><dd class="mono" data-local="celula">${c.origem.celula}</dd></div>`;
+    const evidencia = c.origem.arquivo === 'laudo' ? trechoDoLaudo(dados, c.origem.pagina, M.formatar(c)) : gradeDaPlanilha(dados, c);
+    return `<div class="origem-campo" data-campo="${c.id}" data-arquivo="${c.origem.arquivo}">`
+      + `<p class="origem-rotulo">${esc(c.rotulo)}</p><p class="origem-valor">${M.formatar(c)}</p>`
+      + `<dl class="origem-local"><div class="origem-arquivo"><dt>Arquivo</dt><dd>${esc(arquivo.nome)}</dd></div>${local}</dl>${evidencia}</div>`;
+  }
+
+  function cartaoDaOrigem(dados) {
+    const origem = RM.estado.painel.origem;
+    if (!origem) {
+      return '<section class="cartao" id="origem"><h2>Origem do valor</h2>'
+        + '<p class="texto-apoio">Clique num valor sublinhado do documento para ver de onde ele veio: o arquivo e a página do laudo, '
+        + 'ou o arquivo, a aba e a célula da planilha.</p></section>';
+    }
+    if (origem.tipo === 'pagina') {
+      const secao = dados.laudo.secoes[origem.secao];
+      return '<section class="cartao" id="origem" data-tipo="pagina"><h2>Trecho do laudo</h2>'
+        + `<p class="texto-apoio">A leitura localizou a seção ${esc(secao.titulo)} do laudo nas páginas ${secao.paginas}, e o modelo de linguagem redigiu a seção do memorando a partir dela.</p>`
+        + `<dl class="origem-local"><div class="origem-arquivo"><dt>Arquivo</dt><dd>${esc(dados.arquivos.laudo.nome)}</dd></div></dl>`
+        + `${trechoDoLaudo(dados, origem.pagina)}</section>`;
+    }
+    const campos = origem.ids.map((id) => M.campo(dados, id));
+    const titulo = campos.length > 1 ? `Este valor aparece em ${campos.length} campos da ficha` : 'Origem do valor';
+    return `<section class="cartao" id="origem" data-tipo="campos"><h2>${titulo}</h2>${campos.map((c) => detalheDoCampo(dados, c)).join('')}</section>`;
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Painel: marcações, ficha e registro
+  // ---------------------------------------------------------------------------------------------
+  function explicacao(m) {
+    if (m.motivo === 'valor') return `O valor ${m.texto} não consta da ficha do caso. Confira com a tabela de projeções e com o laudo antes de manter o trecho, ou edite o trecho no documento.`;
+    return `O nome ${m.texto} não aparece no laudo nem na documentação recebida. Confira a origem antes de manter o trecho, ou edite o trecho no documento.`;
+  }
+
+  function itemDaMarcacao(m, somenteLeitura) {
+    const selecionada = RM.estado.painel.marca === m.id ? ' selecionada' : '';
+    const revisao = m.revisada
+      ? `<p class="marca-revisao">Revisada por ${esc(m.revisada.quem)} em ${m.revisada.quando}.${m.revisada.nota ? ` ${esc(m.revisada.nota)}` : ''}</p>`
+      : '';
+    let acao = '';
+    if (!somenteLeitura && m.revisada) acao = `<button type="button" class="link" data-acao="reabrir" data-marca="${esc(m.id)}">Reabrir</button>`;
+    if (!somenteLeitura && !m.revisada) acao = `<button type="button" class="botao botao-pequeno" data-acao="revisar" data-marca="${esc(m.id)}">Marcar como revisado</button>`;
+    return `<li class="marca-item${m.revisada ? ' revisada' : ''}${selecionada}" data-marca-item="${esc(m.id)}" data-motivo="${m.motivo}" `
+      + `data-revisada="${Boolean(m.revisada)}" data-secao="${m.secao}" data-origem-secao="${m.origemDaSecao}">`
+      + `<div class="marca-item-topo"><span class="marca-tipo">${m.revisada ? '<span aria-hidden="true">✓ </span>Revisada' : `<span aria-hidden="true">! </span>${MOTIVOS[m.motivo]}`}</span>`
+      + `<span class="marca-secao">Seção ${m.numero}</span></div><p class="marca-trecho">«${esc(m.texto)}»</p>`
+      + `${m.revisada ? '' : `<p class="marca-explica">${esc(explicacao(m))}</p>`}${revisao}`
+      + `<div class="marca-acoes"><button type="button" class="link" data-acao="ir-trecho" data-marca="${esc(m.id)}">Ir ao trecho</button>${acao}</div></li>`;
+  }
+
+  function cartaoDasMarcacoes(rascunho, somenteLeitura) {
+    const lista = rascunho.marcacoes.length
+      ? `<ul class="lista-marcas">${rascunho.marcacoes.map((m) => itemDaMarcacao(m, somenteLeitura)).join('')}</ul>`
+      : '<p class="vazio">A conferência não marcou nenhum trecho deste rascunho.</p>';
+    return '<section class="cartao" id="marcacoes"><h2>Marcações de revisão</h2>'
+      + `<p class="texto-apoio">A conferência é determinística: ela comparou ${rascunho.conferidos.valores} valores com a ficha do caso e `
+      + `${rascunho.conferidos.nomes} nomes com os insumos, e marcou os trechos que não passaram.</p>${lista}</section>`;
+  }
+
+  function localDoCampo(c) {
+    return c.origem.arquivo === 'laudo' ? `p. ${c.origem.pagina}` : `${c.origem.aba} · ${c.origem.celula}`;
+  }
+
+  function cartaoDaFicha(dados) {
+    const grupos = ['gt', 'avaliador', 'laudo'].map((arquivo) => {
+      const campos = dados.campos.filter((c) => c.origem.arquivo === arquivo);
+      const itens = campos.map((c) => `<li><span class="ficha-rotulo">${esc(c.rotulo)}</span>`
+        + `<span class="valor" role="button" tabindex="0" data-acao="origem" data-campos="${c.id}" data-campo-ficha="${c.id}">${M.formatar(c)}</span>`
+        + `<span class="ficha-local mono">${esc(localDoCampo(c))}</span></li>`).join('');
+      return `<h3 class="micro grupo-ficha">${NOMES_CURTOS_DOS_ARQUIVOS[arquivo]} · ${campos.length} campos</h3><ul class="ficha-lista">${itens}</ul>`;
+    });
+    return '<section class="cartao" id="ficha"><h2>Ficha do caso</h2>'
+      + `<p class="texto-apoio">A ficha reúne ${dados.campos.length} campos lidos dos insumos, e cada um indica o arquivo e a página ou a célula de origem.</p>`
+      + `${grupos.join('')}</section>`;
+  }
+
+  function cartaoDoRegistro(caso) {
+    const itens = [...caso.registro].reverse().map((r) => `<li><span class="registro-data mono">${r.quando}</span><span>${esc(r.texto)}</span></li>`).join('');
+    return '<section class="cartao" id="registro"><h2>Registro do caso</h2>'
+      + '<p class="texto-apoio">O histórico guarda cada geração, edição e revisão, de modo que outro analista retome o memorando no ponto em que o primeiro parou.</p>'
+      + `<ul class="registro">${itens}</ul></section>`;
+  }
+
+  function painel(dados, caso, rascunho, somenteLeitura) {
+    const aba = RM.estado.painel.aba;
+    const aviso = somenteLeitura ? '' : avisoDeRetomada(dados, caso, rascunho, 'painel');
+    const pendentes = M.pendentes(rascunho).length;
+    const abas = [['revisao', `Revisão${pendentes ? ` (${pendentes})` : ''}`], ['ficha', 'Ficha do caso'], ['registro', 'Registro']]
+      .map(([valor, rotulo]) => `<button type="button" role="tab" data-acao="painel-aba" data-valor="${valor}" aria-selected="${aba === valor}">${rotulo}</button>`);
+    let conteudo;
+    if (aba === 'ficha') conteudo = cartaoDaFicha(dados);
+    else if (aba === 'registro') conteudo = cartaoDoRegistro(caso);
+    else conteudo = cartaoDaOrigem(dados) + cartaoDasMarcacoes(rascunho, somenteLeitura);
+    return `<aside class="painel" id="painel">${aviso}<div class="painel-abas" role="tablist" aria-label="Painel de revisão">${abas.join('')}</div>`
+      + `<div class="painel-corpo">${conteudo}</div></aside>`;
+  }
+
+  RM.registrarTela('rascunho', (tela) => {
+    const id = RM.estado.casoAtivo;
+    const dados = RM.dadosDoCaso(id);
+    const caso = RM.estadoDoCaso(id);
+    const titulo = 'Rascunho do memorando';
+    if (!caso.gerado) {
+      tela.innerHTML = RM.cabecalho(titulo, 'O rascunho aparece aqui depois da geração.')
+        + '<section class="cartao vazio" id="rascunho-vazio"><p>Este caso ainda não tem rascunho. Informe os insumos em Novo memorando e gere o rascunho.</p>'
+        + '<button type="button" class="botao" data-acao="tela" data-valor="novo">Ir para Novo memorando</button></section>';
+      return;
+    }
+    // versao é o rascunho na tela: o atual (o próprio caso) ou um anterior, aberto só para leitura
+    const versao = RM.versaoEmTela(id);
+    const somenteLeitura = versao !== caso;
+    const rascunho = M.montarRascunho(dados, versao);
+    const origem = RM.estado.painel.origem;
+    const opcoes = {
+      revisadas: versao.revisadas,
+      camposAtivos: origem && origem.tipo === 'campos' ? origem.ids : [],
+      marcaAtiva: RM.estado.painel.marca,
+      somenteLeitura,
+    };
+    const retomada = somenteLeitura ? '' : avisoDeRetomada(dados, caso, rascunho, 'topo');
+    tela.innerHTML = RM.cabecalho(titulo,
+      'Clique num valor sublinhado para ver de onde ele veio. A conferência marca para revisão todo trecho com valor ausente da ficha do caso '
+      + 'ou com nome ausente dos insumos, e a conclusão fica com o analista.')
+      + barraDoCaso(id, dados, caso, versao, rascunho) + avisoDeLeitura(id, caso, versao) + retomada
+      + `<div class="grade-rascunho">${sumario(rascunho, caso)}${documento(dados, versao, rascunho, opcoes)}${painel(dados, caso, rascunho, somenteLeitura)}</div>`;
+
+    // A grade da planilha rola até a célula de origem, que pode cair fora da área visível (a coluna H, de 2031)
+    tela.querySelectorAll('.grade-rolagem').forEach((grade) => {
+      const alvo = grade.querySelector('.grade-alvo');
+      if (!alvo) return;
+      const caixaDaGrade = grade.getBoundingClientRect();
+      const caixaDoAlvo = alvo.getBoundingClientRect();
+      grade.scrollLeft += caixaDoAlvo.left - caixaDaGrade.left - (caixaDaGrade.width - caixaDoAlvo.width) / 2;
+    });
+  });
+})();
+
+/* tela-historico.js — Histórico dos casos.
+ *
+ * Lista os casos com o CPC, o analista responsável e a situação da revisão. «Retomar» abre o rascunho de um
+ * caso que outro analista começou, na seção em que ele parou, com a ficha, os rascunhos e as marcações
+ * preservados. Os casos navegáveis vêm do estado (nucleo.js); os demais só aparecem na lista.
+ */
+(function () {
+  'use strict';
+
+  const C = window.RM_CASOS;
+  const RM = window.RM;
+  const esc = RM.esc;
+
+  function celulaDoCaso(empresa, cliente) {
+    return `<td class="caso-celula"><span class="caso-empresa">${esc(empresa)}</span>`
+      + `${cliente !== empresa ? `<span class="caso-cliente">${esc(cliente)}</span>` : ''}</td>`;
+  }
+
+  function celulaDoCpc(cpc) {
+    return `<td class="nowrap"><span class="cpc">CPC ${cpc}</span><span class="cpc-titulo">${C.CPCS[cpc]}</span></td>`;
+  }
+
+  function linhaNavegavel(id) {
+    const dados = RM.dadosDoCaso(id);
+    const caso = RM.estadoDoCaso(id);
+    const situacao = RM.situacaoDoCaso(id);
+    const parou = caso.ultimaSecao
+      ? (() => { const i = dados.secoes.findIndex((s) => s.id === caso.ultimaSecao); return `Seção ${i + 1}, ${dados.secoes[i].titulo}`; })()
+      : '—';
+    const atualizacao = caso.registro.length ? caso.registro[caso.registro.length - 1].quando : '—';
+    let acao;
+    if (!caso.gerado) acao = '<button type="button" class="botao-secundario" data-acao="tela" data-valor="novo">Continuar</button>';
+    else if (caso.analista !== RM.estado.analista) acao = `<button type="button" class="botao" data-acao="retomar" data-caso="${id}">Retomar</button>`;
+    else acao = `<button type="button" class="botao-secundario" data-acao="abrir-caso" data-caso="${id}">Abrir</button>`;
+    // Os rascunhos que uma geração nova substituiu continuam na lista e abrem só para leitura
+    const anteriores = caso.anteriores.map((v) => `<button type="button" class="link link-versao" data-acao="abrir-versao" data-caso="${id}" `
+      + `data-versao="${v.versao}">Rascunho ${v.versao}, só leitura</button>`).join('');
+    if (anteriores) acao += `<div class="versoes-anteriores">${anteriores}</div>`;
+    const analista =`<span>${esc(caso.analista)}${caso.analista === RM.estado.analista ? ' (você)' : ''}</span>`
+      + `${caso.retomadoDe ? `<span class="caso-cliente">Retomado de ${esc(caso.retomadoDe)}</span>` : ''}`;
+    return `<tr data-caso="${id}" data-analista="${esc(caso.analista)}" data-cpc="${dados.cpc}">${celulaDoCaso(dados.empresa, dados.cliente)}${celulaDoCpc(dados.cpc)}`
+      + `<td class="analista-celula">${analista}</td><td>${RM.etiquetaDeSituacao(situacao)}<span class="situacao-detalhe">${esc(situacao.detalhe)}</span></td>`
+      + `<td>${esc(parou)}</td><td class="mono nowrap">${atualizacao}</td><td class="acao-celula">${acao}</td></tr>`;
+  }
+
+  function linhaDaLista(caso) {
+    const classe = caso.situacao === 'Concluído' ? 'ok' : 'neutro';
+    return `<tr data-caso="${caso.id}" data-analista="${esc(caso.analista)}" data-cpc="${caso.cpc}">${celulaDoCaso(caso.empresa, caso.cliente)}${celulaDoCpc(caso.cpc)}`
+      + `<td class="analista-celula">${esc(caso.analista)}</td><td>${RM.etiquetaDeSituacao({ rotulo: caso.situacao, classe })}`
+      + `<span class="situacao-detalhe">${esc(caso.detalhe)}.</span></td><td>—</td><td class="mono nowrap">${caso.atualizacao}</td>`
+      + '<td class="acao-celula"><span class="sem-acao">—</span></td></tr>';
+  }
+
+  RM.registrarTela('historico', (tela) => {
+    const linhas = C.ordemDoHistorico.map((id) => (C.navegaveis[id] ? linhaNavegavel(id) : linhaDaLista(C.soNoHistorico[id])));
+    tela.innerHTML = RM.cabecalho('Histórico dos casos',
+      'Cada caso guarda a ficha, os rascunhos e as marcações de revisão, de modo que outro analista retome o memorando a partir do ponto em que o primeiro parou.')
+      + '<section class="cartao" id="historico"><div class="rolagem"><table class="tabela" id="tabela-casos"><thead><tr>'
+      + '<th scope="col">Caso</th><th scope="col">CPC</th><th scope="col">Analista responsável</th><th scope="col">Situação da revisão</th>'
+      + '<th scope="col">Parou em</th><th scope="col">Atualizado em</th><th scope="col"><span class="so-leitor">Ação</span></th></tr></thead>'
+      + `<tbody>${linhas.join('')}</tbody></table></div></section>`
+      + '<section class="cartao" id="como-retomar"><h2>Como funciona a retomada</h2>'
+      + '<p>O histórico guarda, para cada caso, a ficha com a origem de cada valor, os rascunhos gerados, os trechos editados e as marcações de revisão. '
+      + 'Quem retoma o memorando abre o rascunho na seção em que o colega parou e encontra as marcações que ele já revisou.</p></section>';
+  });
+})();
+
+</script>
+<script>
+window.RM.iniciar();
+</script>
+</body>
+</html>
